@@ -35,11 +35,11 @@
                                     src="{{ $m->photo ? secure_asset('storage/'.$m->photo) : secure_asset('default-merchandise.jpg')}}"
                                     alt="">
                                 <div class="card-body">
-                                    <h5 class="card-title">{{ $m->name }}</h5>
-                                    <p class="card-text">
+                                    <h5 class="card-title"><a href="{{ secure_url('/admin/merchandise/'.$m->id) }}">{{ $m->name }}</a></h5>
+                                    <p class="card-text font-weight-bold">
                                         Price: {{ $m->price }}<br>
                                         Amount: {{ $m->amount }}<br>
-                                        Status: {{ $m->status=='C' ? 'OFF' : 'Selling' }}<br>
+                                        Status: <span style="color:{{ $m->status=='C' ? 'tomato' : 'olive'}};">{{ $m->status=='C' ? 'Off' : 'Selling' }}</span><br>
                                         Category: {{ $m->category }}<br>
                                         id: {{ $m->id }}
                                     </p>
@@ -55,8 +55,8 @@
                                             style="display:inline; float:right;"
                                             action="/admin/merchandise/{{ $m->id }}"
                                             onsubmit="return confirm('Are you sure to delete this item?');">
-                                            {{ csrf_field() }}
-                                            {{ method_field('DELETE') }}
+                                            @csrf
+                                            @method('delete')
                                             <button type="submit" class="btn btn-warning">Delete</button>
                                         </form>
                                     </div>

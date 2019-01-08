@@ -52,9 +52,8 @@ class MerchandiseController extends Controller
             $path = $request->file('photo')->store('resources/img', 'public');
             $data['photo'] = $path;
         }
-        return asset($path);
         $Merchandise = Merchandise::create($data);
-        return redirect('/admin/merchandise/'.$Merchandise->id.'/show');
+        return redirect('/admin/merchandise/'.$Merchandise->id);
     }
 
     public function show($id, Request $request)
@@ -80,5 +79,39 @@ class MerchandiseController extends Controller
         ]);
 
         return redirect('/admin/merchandise');
+    }
+
+    public function edit($id, Request $request)
+    {
+        $Merchandise = Merchandise::findOrFail($id);
+        $binding = [
+            'Merchandise' => $Merchandise,
+        ];
+        return view('admin.merchandise.edit', $binding);
+    }
+
+    public function editProcess($id, Request $request)
+    {
+        $Merchandise = Merchandise::findOrFail($id);
+        $Merchandise->name = $request->name;
+        $Merchandise->intro = $request->intro;
+        $Merchandise->category = $request->category;
+        $Merchandise->price = $request->price;
+        $Merchandise->amount = $request->amount;
+        $Merchandise->status = $request->status;
+        $Merchandise->barcode_ean = $request->barcode_ean;
+        if($request->hasFile('photo')) {
+            $path = $request->file('photo')->store('resources/img', 'public');
+            Storage::disk('public')->delete($Merchandise->photo);
+            $Merchandise->photo = $path;
+        }
+        $Merchandise->save();
+
+        $request->session()->flash('alert', [
+            'type' => 'success',
+            'message' => 'Updated successfully',
+        ]);
+
+        return redirect('/admin/merchandise/'.$id);
     }
 }

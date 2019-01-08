@@ -39,7 +39,13 @@ Route::group(
         Route::get('/merchandise', 'Admin\MerchandiseController@index');
         Route::get('/merchandise/new', 'Admin\MerchandiseController@new');
         Route::post('/merchandise/new', 'Admin\MerchandiseController@newProcess');
-        Route::get('/merchandise/{id}', 'Admin\MerchandiseController@show');
-        Route::delete('/merchandise/{id}', 'Admin\MerchandiseController@delete');
+        Route::group(
+            ['prefix' => '/merchandise/{id}'], function() {
+                Route::get('/', 'Admin\MerchandiseController@show');
+                Route::delete('/', 'Admin\MerchandiseController@show');
+                Route::get('/edit', 'Admin\MerchandiseController@edit');
+                Route::put('/', 'Admin\MerchandiseController@editProcess');
+            }
+        );
     }
 );

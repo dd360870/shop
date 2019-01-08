@@ -50,6 +50,11 @@
                                 @endif
                             </li>
                         @else
+                            @if(Auth::user()->admin == 1)
+                                <li class="nav-item form-inline">
+                                    <a href="/admin" role="button" class="btn-sm btn-danger" style="margin:auto;">Admin Panel</a>
+                                </li>
+                            @endif
                             <li class="nav-item dropdown">
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                     {{ Auth::user()->name }} <span class="caret"></span>
