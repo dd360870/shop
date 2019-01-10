@@ -8,6 +8,7 @@ use App\Merchandise;
 
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class MerchandiseController extends Controller
 {
@@ -49,7 +50,7 @@ class MerchandiseController extends Controller
         $data = $request->all();
         //image process
         if($request->hasFile('photo')) {
-            $path = $request->file('photo')->store('resources/img', 'public');
+            $path = Storage::disk('s3')->put('resources/img', $request->file('photo'));
             $data['photo'] = $path;
         }
         $Merchandise = Merchandise::create($data);
@@ -69,7 +70,7 @@ class MerchandiseController extends Controller
     {
         $Merchandise = Merchandise::findOrFail($id);
         if(!is_null($Merchandise->photo)) {
-            Storage::disk('public')->delete($Merchandise->photo);
+            Storage::disk('s3')->delete($Merchandise->photo);
         }
         $Merchandise->delete();
         
@@ -101,8 +102,8 @@ class MerchandiseController extends Controller
         $Merchandise->status = $request->status;
         $Merchandise->barcode_ean = $request->barcode_ean;
         if($request->hasFile('photo')) {
-            $path = $request->file('photo')->store('resources/img', 'public');
-            Storage::disk('public')->delete($Merchandise->photo);
+            $path = Storage::disk('s3')->put('resources/img', $request->file('photo'));
+            Storage::disk('s3')->delete($Merchandise->photo);
             $Merchandise->photo = $path;
         }
         $Merchandise->save();

@@ -10,14 +10,14 @@
     <title>{{ config('app.name', 'Laravel') }}</title>
 
     <!-- Scripts -->
-    <script src="{{ asset('js/app.js') }}"></script>
+    <script src="{{ secure_asset('js/app.js') }}"></script>
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet" type="text/css">
 
     <!-- Styles -->
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link href="{{ secure_asset('css/app.css') }}" rel="stylesheet">
 
 </head>
 <body>
@@ -52,7 +52,7 @@
                         @else
                             @if(Auth::user()->admin == 1)
                                 <li class="nav-item form-inline">
-                                    <a href="/admin" role="button" class="btn-sm btn-danger" style="margin:auto;">Admin Panel</a>
+                                    <a href="/admin" role="button" class="btn btn-sm btn-danger" style="margin:auto;">Admin Panel</a>
                                 </li>
                             @endif
                             <li class="nav-item dropdown">

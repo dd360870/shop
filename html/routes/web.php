@@ -35,7 +35,9 @@ Route::get('/', function() {
 
 Route::group(
     ['prefix' => 'admin'], function() {
-        Route::get('/', 'Admin\AdminController@index')->name('admin');
+        Route::get('/', function() {
+            return redirect('/admin/merchandise');
+        })->name('admin');
         Route::get('/merchandise', 'Admin\MerchandiseController@index');
         Route::get('/merchandise/new', 'Admin\MerchandiseController@new');
         Route::post('/merchandise/new', 'Admin\MerchandiseController@newProcess');
@@ -45,6 +47,16 @@ Route::group(
                 Route::delete('/', 'Admin\MerchandiseController@show');
                 Route::get('/edit', 'Admin\MerchandiseController@edit');
                 Route::put('/', 'Admin\MerchandiseController@editProcess');
+            }
+        );
+        Route::group(
+            ['prefix' => '/user'], function() {
+                Route::get('/', 'Admin\UserController@index');
+            }
+        );
+        Route::group(
+            ['prefix' => '/transaction'], function() {
+                Route::get('/', 'Admin\TransactionController@index');
             }
         );
     }

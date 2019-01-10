@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('admin.base')
 
 @section('content')
 <div class="container">
@@ -28,7 +28,7 @@
                     <div class="container">
                         <div class="row">
                             <div class="col-md-6">
-                                <img src="{{ $Merchandise->photo ? secure_asset('storage/'.$Merchandise->photo) : secure_url('default-merchandise.jpg') }}"
+                                <img src="{{ $Merchandise->photo ? Storage::disk('s3')->url($Merchandise->photo) : secure_url('default-merchandise.jpg') }}"
                                     alt=""
                                     class="img-thumbnail"
                                     style="width:600px; height:width; display:block; margin:auto;">
