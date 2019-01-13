@@ -28,10 +28,9 @@ Route::group(
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
-Route::get('/', function() {
-    return redirect('home');
-});
+Route::get('/', 'HomeController@index')->name('home');
+Route::get('/men', 'HomeController@men');
+Route::get('/women', 'HomeController@women');
 
 Route::group(
     ['prefix' => 'admin'], function() {
@@ -57,6 +56,12 @@ Route::group(
         Route::group(
             ['prefix' => '/transaction'], function() {
                 Route::get('/', 'Admin\TransactionController@index');
+            }
+        );
+        Route::group(
+            ['prefix' => '/category'], function() {
+                Route::get('/', 'Admin\CategoryController@index');
+                Route::post('/add', 'Admin\CategoryController@add');
             }
         );
     }

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Session;
 
 class UserController extends Controller
 {
@@ -49,15 +50,15 @@ class UserController extends Controller
             'new-password-confirmation' => 'same:new-password',
         ])->validate();
 
-        //success, redirect to relogin
+        //$user->password = Hash::make($request['new-password']);
+        //$user->save();
+
+        //success, redirect to login
         Auth::logout();
-        $message = [
+        Session::flash('alert', [
             'type' => 'success',
             'message' => 'Password changed successfully, login with your new password.',
-        ];
-        return view('auth.login', [
-            'alert' => $message,
-            'email' => $user->email,
         ]);
+        return redirect(route('login'));
     }
 }

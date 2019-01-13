@@ -47,14 +47,11 @@
                         <div class="form-group">
                             <label for="categoryInput">Category</label>
                             <select class="form-control {{ $errors->has('category') ? ' is-invalid' : '' }}" id="categoryInput" name="category">
-                                <option value="0">上衣:短袖(00)</option>
-                                <option value="1">上衣:長袖(01)</option>
-                                <option value="2">褲子:短褲(02)</option>
-                                <option value="3">褲子:長褲(03)</option>
-                                <option value="4">內著(04)</option>
-                                <option value="5">外套(05)</option>
-                                <option value="6">襪子(06)</option>
-                                <option value="7">配件(07)</option>
+                                @foreach ($categories as $c)
+                                    @isset($c->lev4)
+                                        <option value="{{ $c->lev4_id }}">{{ $c->lev2.' -> '.$c->lev3.' -> '.$c->lev4.' [ '.$c->lev4_id.' ] ' }}</option>
+                                    @endisset
+                                @endforeach
                             </select>
                             <div class="invalid-feedback"><strong>{{ $errors->first('category') }}</strong></div>
                         </div>

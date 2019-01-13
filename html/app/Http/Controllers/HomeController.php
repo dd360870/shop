@@ -26,8 +26,11 @@ class HomeController extends Controller
         return view('home');
     }
 
-    public function newMerchandise()
+    public function men(Request $request)
     {
-        return 'new';
+        $binding = [
+            'merchandises' => $request->category ? Merchandise::where('category', '=', $request->category) : 'all men ',
+        ];
+        return view('');
     }
 }

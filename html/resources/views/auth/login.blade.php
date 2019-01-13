@@ -4,11 +4,11 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
-            @isset($alert)
+            @if(isset($alert) || $alert = Session::get('alert', false))
                 @component('components.alert', ['type' => $alert['type']])
                 {{ $alert['message'] }}
                 @endcomponent
-            @endisset
+            @endif
             <div class="card">
                 <div class="card-header">{{ __('Login') }}</div>
 

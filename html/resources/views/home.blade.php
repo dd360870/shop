@@ -3,19 +3,14 @@
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">Dashboard</div>
-
-                <div class="card-body">
-                    @if (session('status'))
-                        <div class="alert alert-success" role="alert">
-                            {{ session('status') }}
-                        </div>
-                    @endif
-
-                    You are logged in!
-                </div>
+        <div class="col-12">
+            @if (isset($alert) || $alert=Session::get('alert', false))
+                @component('components.alert', ['type' => $alert['type']])
+                    {{ $alert['message'] }}
+                @endcomponent
+            @endif
+            <div class="border-bottom border-left border-right p-3">
+                <h1>HOME PAGE</h1>
             </div>
         </div>
     </div>

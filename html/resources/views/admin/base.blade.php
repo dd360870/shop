@@ -15,6 +15,7 @@
     <!-- Fonts -->
     <link rel="dns-prefetch" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
     <!-- Styles -->
     <link href="{{ secure_asset('css/app.css') }}" rel="stylesheet">
@@ -37,6 +38,9 @@
                     <ul class="navbar-nav mr-auto">
                         <li class="nav-item rounded @if(Request::segment(2)=='merchandise') active @endif">
                             <a class="nav-link" href="/admin/merchandise">Merchandise</a>
+                        </li>
+                        <li class="nav-item rounded @if(Request::segment(2)=='category') active @endif">
+                            <a class="nav-link" href="/admin/category">Category</a>
                         </li>
                         <li class="nav-item rounded @if(Request::segment(2)=='user') active @endif">
                             <a class="nav-link" href="/admin/user">User</a>

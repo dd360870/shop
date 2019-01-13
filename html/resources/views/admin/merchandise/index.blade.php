@@ -3,7 +3,27 @@
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-lg-12">
+        <div class="col-lg-2">
+            @for ($i = 0, $count=count($categories); $i < $count;)
+                @if (isset($categories[$i]->lev4))
+                    <h4>{{ $categories[$i]->lev2 }}</h4>
+                    <ul>
+                    @for ($current_lev2=$categories[$i]->lev2_id; $i < $count && $categories[$i]->lev2_id==$current_lev2; )
+                        <li>{{ $categories[$i]->lev3 }}
+                            <ul>
+                            @for ($current_lev3=$categories[$i]->lev3_id; $i < $count && $categories[$i]->lev3_id==$current_lev3;$i++)
+                                <li><a href="{{ url()->current().'?category='.$categories[$i]->lev4_id }}" style="color:black;
+                                    {{ $category==$categories[$i]->lev4_id ? 'font-weight:bold;' : NULL }}
+                                ">{{ $categories[$i]->lev4 }}</a></li>
+                            @endfor
+                            </ul>
+                        </li>
+                    @endfor
+                    </ul>
+                @endif
+            @endfor
+        </div>
+        <div class="col-lg-10">
             @if(isset($alert) || $alert = Session::get('alert', false))
                 @component('components.alert', ['type' => $alert['type']])
                     {{ $alert['message'] }}
@@ -14,7 +34,7 @@
                     <div class="mb-3">
                         <a class="btn btn-primary" href="/admin/merchandise/new" role="button" style="">+ New merchandise</a>
                     </div>
-                    @if ($merchandises->isEmpty())
+                    @if ( $merchandises->isEmpty() )
                         @lang('No Merchandise')
                     @else
                     <div class="card-deck" id="first-deck">
@@ -69,7 +89,7 @@
         let elements = $('#first-deck').children();
         let size = elements.length;
 
-        for (let i = width; i < size; i += width) {
+        for (let i = (size<width ? 0 : width); i < size; i += width) {
             console.log(i);
 
             let string = '<div class="card-deck">';
