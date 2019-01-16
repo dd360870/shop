@@ -6,16 +6,16 @@
         <!-- Category sidebar -->
         <div class="col-lg-2">
             @for ($i = 0, $count=count($categories); $i < $count;)
-                @if (isset($categories[$i]->lev4))
-                    <h4>{{ $categories[$i]->lev2 }}</h4>
+                @if (isset($categories[$i]->lev3))
+                    <h4>{{ $categories[$i]->lev1 }}</h4>
                     <ul>
-                    @for ($current_lev2=$categories[$i]->lev2_id; $i < $count && $categories[$i]->lev2_id==$current_lev2; )
-                        <li>{{ $categories[$i]->lev3 }}
+                    @for ($current_lev1=$categories[$i]->lev1_id; $i < $count && $categories[$i]->lev1_id==$current_lev1; )
+                        <li>{{ $categories[$i]->lev2 }}
                             <ul>
-                            @for ($current_lev3=$categories[$i]->lev3_id; $i < $count && $categories[$i]->lev3_id==$current_lev3;$i++)
-                                <li><a href="{{ '/men?category='.$categories[$i]->lev4_id }}" style="color:black;
-                                    {{ $category==$categories[$i]->lev4_id ? 'font-weight:bold;' : NULL }}
-                                ">{{ $categories[$i]->lev4 }}</a></li>
+                            @for ($current_lev2=$categories[$i]->lev2_id; $i < $count && $categories[$i]->lev2_id==$current_lev2;$i++)
+                                <li><a href="{{ '/men?category='.$categories[$i]->lev3_id }}" style="color:black;
+                                    {{ $category==$categories[$i]->lev3_id ? 'font-weight:bold;' : NULL }}
+                                ">{{ $categories[$i]->lev3 }}</a></li>
                             @endfor
                             </ul>
                         </li>
@@ -33,7 +33,7 @@
             <div style="max-height:500px;">
                 <div style="height:100%; width:100%; overflow: auto;">
                     <div style="height:100%; width:50%; padding:60px; float:left;">
-                        <img style="height:100%; width:100%;" src="{{ $Merchandise->photo ? Storage::disk('s3')->url($Merchandise->photo) : 'default-merchandise.jpg' }}">
+                        <img style="height:100%; width:100%;" src="{{ $Merchandise->photo ? Storage::disk('s3')->url($Merchandise->photo) : '/default-merchandise.jpg' }}">
                     </div>
                     <div style="padding:60px;">
                         <h2>{{ $Merchandise->name }}</h2>

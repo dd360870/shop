@@ -10,11 +10,12 @@ class MerchandiseController extends Controller
 {
     //
     public function show(Request $request, $id) {
-        $Merchandise = Merchandise::findOrFail($id);
+        $Merchandise = Merchandise::findId($id);
         $binding = [
             'Merchandise' => $Merchandise,
-            'categories' => Category::tree()->get(),
+            'categories' => Category::tree($Merchandise->type)->get(),
             'category' => $Merchandise->category,
+            'type' => $Merchandise->type,
         ];
         return view('merchandise.show', $binding);
     }

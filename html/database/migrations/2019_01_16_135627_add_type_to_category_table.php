@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddAdminToUsersTable extends Migration
+class AddTypeToCategoryTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,8 @@ class AddAdminToUsersTable extends Migration
      */
     public function up()
     {
-        Schema::table('users', function (Blueprint $table) {
-            //
-            $table->boolean('admin')->nullable();
+        Schema::table('category', function (Blueprint $table) {
+            $table->integer('type');
         });
     }
 
@@ -26,8 +25,8 @@ class AddAdminToUsersTable extends Migration
      */
     public function down()
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('admin');
+        Schema::table('category', function (Blueprint $table) {
+            $table->dropColumn('type');
         });
     }
 }

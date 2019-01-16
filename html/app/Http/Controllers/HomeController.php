@@ -30,38 +30,23 @@ class HomeController extends Controller
 
     public function men(Request $request)
     {
-        $temp = [2];
-        //$all = collect([]);
-        do {
-            $last = $temp;
-            $temp = Category::whereIn('parent', $temp)->get();
-            //$all = $all->concat($temp);
-            $temp = $temp->pluck('id');
-        } while(!$temp->isEmpty());
-
-        //return var_dump($last);
-
-        $binding = [
-            'merchandises' => $request->category ? Merchandise::selling()->category($request->category)->get() : Merchandise::selling()->whereIn('category', $last)->get(),
-            'categories' => Category::tree('men')->get(),
-            'category' => $request->category,
-        ];
-        return view('merchandise.subview', $binding);
+        return $this->subview($request, 2);
     }
 
     public function women(Request $request)
     {
-        $temp = [3];
-        do {
-            $last = $temp;
-            $temp = Category::whereIn('parent', $temp)->get();
-            $temp = $temp->pluck('id');
-        } while(!$temp->isEmpty());
+        return $this->subview($request, 3);
+    }
+
+    private function subview($request, $type) {
+        $cate = Category::where('type', $type)->get()->pluck('id');
 
         $binding = [
-            'merchandises' => $request->category ? Merchandise::selling()->category($request->category)->get() : Merchandise::selling()->whereIn('category', $last)->get(),
-            'categories' => Category::tree('women')->get(),
+            'merchandises' => $request->category ? Merchandise::selling()->category($request->category)->get() : Merchandise::selling()->whereIn('category', $cate)->get(),
+            'categories' => Category::tree($type)->get(),
             'category' => $request->category,
+            'type' => $type,
+            'type_name' => Category::findOrFail($type)->name,
         ];
         return view('merchandise.subview', $binding);
     }

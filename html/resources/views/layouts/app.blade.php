@@ -34,10 +34,10 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
                     <ul class="navbar-nav mr-auto">
-                        <li class="nav-item rounded @if(Request::segment(1)=='men') active @endif">
+                        <li class="nav-item rounded @if(isset($type) ? ($type==2) : false) active @endif">
                             <a class="nav-link" href="/men">MEN</a>
                         </li>
-                        <li class="nav-item rounded @if(Request::segment(1)=='women') active @endif">
+                        <li class="nav-item rounded @if(isset($type) ? ($type==3) : false) active @endif">
                             <a class="nav-link" href="/women">WOMEN</a>
                         </li>
                     </ul>

@@ -41,4 +41,8 @@ class Merchandise extends Model
     {
         return $query->where('category', $category);
     }
+
+    public function scopeFindId($query, $id) {
+        return Merchandise::where('merchandises.id', $id)->join('category', 'merchandises.category', '=', 'category.id')->first();
+    }
 }
