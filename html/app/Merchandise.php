@@ -31,4 +31,14 @@ class Merchandise extends Model
      * @var array
      */
     protected $hidden = [];
+
+    //取回正在販賣的商品
+    public function scopeSelling($query) {
+        return $query->where('status', '=', 'S');
+    }
+
+    public function scopeCategory($query, $category)
+    {
+        return $query->where('category', $category);
+    }
 }

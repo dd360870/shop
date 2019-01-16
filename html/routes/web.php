@@ -33,6 +33,12 @@ Route::get('/men', 'HomeController@men');
 Route::get('/women', 'HomeController@women');
 
 Route::group(
+    ['prefix' => 'merchandise/{id}'], function() {
+        Route::get('/', 'MerchandiseController@show');
+    }
+);
+
+Route::group(
     ['prefix' => 'admin'], function() {
         Route::get('/', function() {
             return redirect('/admin/merchandise');

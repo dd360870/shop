@@ -23,7 +23,7 @@ class CreateMerchandisesTable extends Migration
             $table->integer('amount')->default(0);
             $table->string('status')->default('C');
             $table->string('barcode_EAN', 13)->nullable()->unique();
-            $table->string('photo')->nullable()->default('default.jpg');
+            $table->string('photo')->nullable();
         });
     }
 

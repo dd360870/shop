@@ -26,16 +26,9 @@ class MerchandiseController extends Controller
     }
     public function index(Request $request)
     {
-        $categories = Category::select('t1.name as lev1', 't2.name as lev2', 't2.id as lev2_id', 't3.name as lev3', 't3.id as lev3_id', 't4.name as lev4', 't4.id as lev4_id')
-            ->from('category as t1')
-            ->leftJoin('category as t2', 't2.parent', '=', 't1.id')
-            ->leftJoin('category as t3', 't3.parent', '=', 't2.id')
-            ->leftJoin('category as t4', 't4.parent', '=', 't3.id')
-            ->where('t1.name', '=', 'HEAD')
-            ->get();
         $binding = [
-            'merchandises' => $request->category ? Merchandise::where('category', '=', $request->category)->get() : Merchandise::all(),
-            'categories' => $categories,
+            'merchandises' => $request->category ? Merchandise::category($request->category)->get() : Merchandise::all(),
+            'categories' => Category::tree()->get(),
             'category' => $request->category,
         ];
         return view('admin.merchandise.index', $binding);
@@ -43,15 +36,8 @@ class MerchandiseController extends Controller
 
     public function new(Request $request)
     {
-        $categories = Category::select('t1.name as lev1', 't2.name as lev2', 't2.id as lev2_id', 't3.name as lev3', 't3.id as lev3_id', 't4.name as lev4', 't4.id as lev4_id')
-            ->from('category as t1')
-            ->leftJoin('category as t2', 't2.parent', '=', 't1.id')
-            ->leftJoin('category as t3', 't3.parent', '=', 't2.id')
-            ->leftJoin('category as t4', 't4.parent', '=', 't3.id')
-            ->where('t1.name', '=', 'HEAD')
-            ->get();
         $binding = [
-            'categories' => $categories,
+            'categories' => Category::tree()->get(),
         ];
         return view('admin.merchandise.new', $binding);
     }
@@ -104,17 +90,9 @@ class MerchandiseController extends Controller
 
     public function edit($id, Request $request)
     {
-        $Merchandise = Merchandise::findOrFail($id);
-        $categories = Category::select('t1.name as lev1', 't2.name as lev2', 't2.id as lev2_id', 't3.name as lev3', 't3.id as lev3_id', 't4.name as lev4', 't4.id as lev4_id')
-            ->from('category as t1')
-            ->leftJoin('category as t2', 't2.parent', '=', 't1.id')
-            ->leftJoin('category as t3', 't3.parent', '=', 't2.id')
-            ->leftJoin('category as t4', 't4.parent', '=', 't3.id')
-            ->where('t1.name', '=', 'HEAD')
-            ->get();
         $binding = [
-            'Merchandise' => $Merchandise,
-            'categories' => $categories,
+            'Merchandise' => Merchandise::findOrFail($id),
+            'categories' => Category::tree()->get(),
         ];
         return view('admin.merchandise.edit', $binding);
     }

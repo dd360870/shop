@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Merchandise;
+use App\Category;
 
 class HomeController extends Controller
 {
@@ -13,7 +15,7 @@ class HomeController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+
     }
 
     /**
@@ -28,9 +30,39 @@ class HomeController extends Controller
 
     public function men(Request $request)
     {
+        $temp = [2];
+        //$all = collect([]);
+        do {
+            $last = $temp;
+            $temp = Category::whereIn('parent', $temp)->get();
+            //$all = $all->concat($temp);
+            $temp = $temp->pluck('id');
+        } while(!$temp->isEmpty());
+
+        //return var_dump($last);
+
         $binding = [
-            'merchandises' => $request->category ? Merchandise::where('category', '=', $request->category) : 'all men ',
+            'merchandises' => $request->category ? Merchandise::selling()->category($request->category)->get() : Merchandise::selling()->whereIn('category', $last)->get(),
+            'categories' => Category::tree('men')->get(),
+            'category' => $request->category,
         ];
-        return view('');
+        return view('merchandise.subview', $binding);
+    }
+
+    public function women(Request $request)
+    {
+        $temp = [3];
+        do {
+            $last = $temp;
+            $temp = Category::whereIn('parent', $temp)->get();
+            $temp = $temp->pluck('id');
+        } while(!$temp->isEmpty());
+
+        $binding = [
+            'merchandises' => $request->category ? Merchandise::selling()->category($request->category)->get() : Merchandise::selling()->whereIn('category', $last)->get(),
+            'categories' => Category::tree('women')->get(),
+            'category' => $request->category,
+        ];
+        return view('merchandise.subview', $binding);
     }
 }
