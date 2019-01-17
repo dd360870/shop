@@ -43,6 +43,18 @@ class Merchandise extends Model
     }
 
     public function scopeFindId($query, $id) {
-        return Merchandise::where('merchandises.id', $id)->join('category', 'merchandises.category', '=', 'category.id')->first();
+        return Merchandise::select(
+                'merchandises.name as Mname',
+                'merchandises.id',
+                'merchandises.intro',
+                'merchandises.category',
+                'merchandises.price',
+                'merchandises.amount',
+                'merchandises.status',
+                'merchandises.barcode_EAN',
+                'merchandises.photo'
+            )
+            ->where('merchandises.id', $id)
+            ->join('category', 'merchandises.category', '=', 'category.id')->first();
     }
 }

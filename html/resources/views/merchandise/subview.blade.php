@@ -3,7 +3,7 @@
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
-        <!-- Category sidebar -->
+        {{-- Category sidebar --}}
         <div class="col-lg-2">
             @for ($i = 0, $count=count($categories); $i < $count;)
                 @if (isset($categories[$i]->lev3))
@@ -24,7 +24,7 @@
                 @endif
             @endfor
         </div>
-        <!-- Main content -->
+        {{-- Main content --}}
         <div class="col-lg-10">
             @if (isset($alert) || $alert=Session::get('alert', false))
                 @component('components.alert', ['type' => $alert['type']])
@@ -40,7 +40,9 @@
                     <div class="card">
                         <img class="card-img-top" src="{{ $m->photo ? Storage::disk('s3')->url($m->photo) : 'default-merchandise.jpg' }}" alt="{{ $m->name }}">
                         <div class="card-body" style="background-color:#eee;">
-                            <h5 class="card-title">{{ $m->name }}</h5>
+                            <h5 class="card-title">
+                                <a href="/merchandise/{{ $m->id }}">{{ $m->name }}</a>
+                            </h5>
                             <p class="card-text">NT$ {{ $m->price }}</p>
                         </div>
                         <div class="card-footer" style="display:none;"></div>

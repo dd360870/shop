@@ -45,6 +45,15 @@
                     <!-- Right Side Of Navbar -->
                     <ul class="navbar-nav ml-auto">
                         <!-- Authentication Links -->
+                        <span class="navbar-text" style="color:black; margin:0 20px 0 0; cursor:pointer;">
+                            <a href="/shopping-cart" id="shopping-cart"
+                                data-toggle="popover"
+                                data-placement="bottom"
+                                title="購物車"
+                                data-content="">
+                                購物車[{{ count(Session::get('cart', [])) }}]
+                            </a>
+                        </span>
                         @guest
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
@@ -91,4 +100,48 @@
         @yield('script')
     </div>
 </body>
+<script type="text/javascript">
+$('#shopping-cart').popover({
+  trigger: 'hover',
+  html: true,
+  delay: { "show": 100, "hide": 300 },
+})
+
+function refreshCart(animation = false) {
+    $.ajax({
+        type: "GET",
+        url: '/shopping-cart/detail',
+        //data: form.serialize(), // serializes the form's elements.
+        success: function(data)
+        {
+            console.log(data); // show response from the php script.
+            let str = '';
+            if(data.count > 0) {
+                str = '<table class="table table-bordered" style="text-align: center;"><tr><th>商品名稱</th><th>數量</th><th>單價</th></tr>';
+                data.detail.forEach(e => {
+                    str += '<tr><td>'+e.name+'</td><td>'+e.amount+'</td><td>'+e.price+'</td></tr>';
+                });
+                str += '<tr><td colspan="2" class="border-right-0" style="text-align: left;">總價：</td><td class="border-left-0">NT$ '+data.total+'</td></tr></table>';
+            } else {
+                str = "<p style='padding: 30px;'>沒有商品</p>";
+            }
+            $('#shopping-cart').attr('data-content', str);
+            $('#shopping-cart').html('購物車['+data.count+']');
+            if(animation) {
+                /*$('#shopping-cart').animate({
+                    fontSize: "2em",
+                }, 200, function() {
+                    $(this).animate({
+                        fontSize: "1em",
+                    }, 100);
+                });*/
+            }
+        }
+    });
+}
+
+$(document).ready(function() {
+    refreshCart();
+})
+</script>
 </html>

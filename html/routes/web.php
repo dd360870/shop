@@ -18,6 +18,7 @@ Route::get(
     }
 );
 
+// user
 Route::group(
     ['prefix' => 'user'], function () {
         Route::get('/', 'UserController@index')->name('user');
@@ -28,16 +29,28 @@ Route::group(
 
 Auth::routes();
 
+// home
 Route::get('/', 'HomeController@index')->name('home');
 Route::get('/men', 'HomeController@men');
 Route::get('/women', 'HomeController@women');
 
+// merchandise
 Route::group(
     ['prefix' => 'merchandise/{id}'], function() {
         Route::get('/', 'MerchandiseController@show');
     }
 );
 
+// cart
+Route::group(
+    ['prefix' => 'shopping-cart'], function() {
+        Route::get('/', 'CartController@show');
+        Route::post('/', 'CartController@add');
+        Route::get('/detail', 'CartController@jsonDetail');
+    }
+);
+
+// admin
 Route::group(
     ['prefix' => 'admin'], function() {
         Route::get('/', function() {
