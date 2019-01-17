@@ -33,44 +33,60 @@
                     <div>
                         <ul>
                         @for ($i = 0, $count = count($categories); $i < $count;)
-                            <li>{{ $categories[$i]->lev2.' [ '.$categories[$i]->lev2_id.' ] ' }}
-                                {{-- show lev3 elements --}}
-                                @if (isset($categories[$i]->lev3))
+                            <li>{{ $categories[$i]->lev1.' [ '.$categories[$i]->lev1_id.' ] ' }}
+                                {{-- show lev2 elements --}}
+                                @if (isset($categories[$i]->lev2))
                                     <ul>
-                                    @for ($current_lev2=$categories[$i]->lev2_id; $i < $count && $categories[$i]->lev2_id == $current_lev2;)
-                                        <li>{{ $categories[$i]->lev3.' [ '.$categories[$i]->lev3_id.' ] ' }}
-                                            {{-- show lev4 elements --}}
-                                            @if (isset($categories[$i]->lev4))
+                                    @for ($current_lev1=$categories[$i]->lev1_id; $i < $count && $categories[$i]->lev1_id == $current_lev1;)
+                                        <li>{{ $categories[$i]->lev2.' [ '.$categories[$i]->lev2_id.' ] ' }}
+                                            {{-- show lev3 elements --}}
+                                            @if (isset($categories[$i]->lev3))
                                                 <ul>
-                                                @for ($current_lev3=$categories[$i]->lev3_id; $i < $count && $categories[$i]->lev3_id == $current_lev3; $i++)
-                                                    <li>{{ $categories[$i]->lev4.' [ '.$categories[$i]->lev4_id.' ] ' }}</li>
+                                                @for ($current_lev2=$categories[$i]->lev2_id; $i < $count && $categories[$i]->lev2_id == $current_lev2; $i++)
+                                                    <li>{{ $categories[$i]->lev3.' [ '.$categories[$i]->lev3_id.' ] ' }}</li>
                                                 @endfor
                                                     <li>
-                                                        @component('admin.category.addButton') {{ $current_lev3 }} @endcomponent
+                                                        @component('admin.category.addButton')
+                                                            @slot('type') {{ $current_lev1 }}  @endslot
+                                                            {{ $current_lev2 }}
+                                                        @endcomponent
                                                     </li>
                                                 </ul>
-                                            {{-- add lev4 element --}}
+                                            {{-- add lev3 element --}}
                                             @else 
                                                 <ul><li>
-                                                    @component('admin.category.addButton') {{ $categories[$i++]->lev3_id }} @endcomponent
+                                                    @component('admin.category.addButton')
+                                                        @slot('type') {{ $current_lev1 }} @endslot
+                                                        {{ $categories[$i++]->lev2_id }}
+                                                    @endcomponent
                                                 </li></ul>
                                             @endif
                                         </li>
                                     @endfor
                                         <li>
-                                            @component('admin.category.addButton') {{ $current_lev2 }} @endcomponent
+                                            @component('admin.category.addButton')
+                                                @slot('type') {{ $current_lev1 }} @endslot
+                                                {{ $current_lev1 }}
+                                            @endcomponent
                                         </li>
                                     </ul>
-                                {{-- add lev3 element --}}
+                                {{-- add lev2 element --}}
                                 @else
                                     <ul><li>
-                                        @component('admin.category.addButton') {{ $categories[$i++]->lev2_id }} @endcomponent
+                                        @component('admin.category.addButton')
+                                            @slot('type') {{ $current_lev1 }} @endslot
+                                            {{ $categories[$i++]->lev1_id }}
+                                        @endcomponent
                                     </li></ul>
                                 @endif
                             </li>
                         @endfor
-                            {{-- add lev2 element --}}
-                            <li>@component('admin.category.addButton') 0 @endcomponent</li>
+                            {{-- add lev1 element --}}
+                            <li>
+                                @component('admin.category.addButton')
+                                    @slot('type') 0 @endslot
+                                @endcomponent
+                            </li>
                         </ul>
                     </div>
                 </div>

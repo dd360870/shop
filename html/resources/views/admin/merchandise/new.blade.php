@@ -48,8 +48,8 @@
                             <label for="categoryInput">Category</label>
                             <select class="form-control {{ $errors->has('category') ? ' is-invalid' : '' }}" id="categoryInput" name="category">
                                 @foreach ($categories as $c)
-                                    @isset($c->lev4)
-                                        <option value="{{ $c->lev4_id }}">{{ $c->lev2.' -> '.$c->lev3.' -> '.$c->lev4.' [ '.$c->lev4_id.' ] ' }}</option>
+                                    @isset($c->lev3)
+                                        <option value="{{ $c->lev3_id }}">{{ $c->lev1.' -> '.$c->lev2.' -> '.$c->lev3.' [ '.$c->lev3_id.' ] ' }}</option>
                                     @endisset
                                 @endforeach
                             </select>

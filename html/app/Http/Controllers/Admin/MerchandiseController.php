@@ -31,6 +31,7 @@ class MerchandiseController extends Controller
             'categories' => Category::tree()->get(),
             'category' => $request->category,
         ];
+        //return var_dump($binding['categories']);
         return view('admin.merchandise.index', $binding);
     }
 

@@ -5,4 +5,5 @@
         <input type="submit" class="btn btn-sm btn-success">
         @csrf
         <input type="text" value="{{ $slot }}" name="parent">
+        <input type="text" value="{{ $type }}" name="type">
     </form>
