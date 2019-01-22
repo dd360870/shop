@@ -31,6 +31,7 @@ Auth::routes();
 
 // home
 Route::get('/', 'HomeController@index')->name('home');
+Route::permanentRedirect('/home', '/');
 Route::get('/men', 'HomeController@men');
 Route::get('/women', 'HomeController@women');
 
@@ -46,7 +47,11 @@ Route::group(
     ['prefix' => 'shopping-cart'], function() {
         Route::get('/', 'CartController@show');
         Route::post('/', 'CartController@add');
-        Route::get('/detail', 'CartController@jsonDetail');
+        Route::get('detail', 'CartController@jsonDetail');
+        Route::get('checkout', 'CartController@checkout')->middleware('auth');
+        Route::get('confirm', function() { return redirect('/shopping-cart/checkout'); });
+        Route::post('confirm', 'CartController@confirm')->middleware('auth');
+        Route::post('checkout', 'CartController@checkoutProcess')->middleware('auth');
     }
 );
 

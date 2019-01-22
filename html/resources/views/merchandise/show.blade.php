@@ -40,8 +40,9 @@
                         <p style="color:#555;">{{ $Merchandise->intro }}</p>
                         <form action="/shopping-cart" class="form-inline" width="100%" id="addCartForm">
                             @csrf
-                            <input class="form-control" type="number" min='1' value="1" style="max-width:60px;" name="amount">
+                            <input class="form-control" type="number" min="1" max="49" value="1" style="max-width:60px;" name="amount">
                             <input value="{{ $Merchandise->id }}" style="display:none;" name="Mid">
+                            <input value="add" style="display:none;" name="method">
                             <input type="submit" class="btn btn-secondary" value="加入購物車"
                                 @if ($Merchandise->amount == 0)
                                     disabled

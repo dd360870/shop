@@ -43,7 +43,11 @@
                             <h5 class="card-title">
                                 <a href="/merchandise/{{ $m->id }}">{{ $m->name }}</a>
                             </h5>
-                            <p class="card-text">NT$ {{ $m->price }}</p>
+                            <p class="card-text">NT$ {{ $m->price }}
+                                @if($m->amount < 1)
+                                    <span style="color:#A33">無庫存</span>
+                                @endif
+                            </p>
                         </div>
                         <div class="card-footer" style="display:none;"></div>
                     </div>

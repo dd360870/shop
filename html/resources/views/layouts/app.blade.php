@@ -15,6 +15,7 @@
     <!-- Fonts -->
     <link rel="dns-prefetch" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
     <!-- Styles -->
     <link href="{{ secure_asset('css/app.css') }}" rel="stylesheet">
@@ -119,7 +120,7 @@ function refreshCart(animation = false) {
             if(data.count > 0) {
                 str = '<table class="table table-bordered" style="text-align: center;"><tr><th>商品名稱</th><th>數量</th><th>單價</th></tr>';
                 data.detail.forEach(e => {
-                    str += '<tr><td>'+e.name+'</td><td>'+e.amount+'</td><td>'+e.price+'</td></tr>';
+                    str += '<tr><td>'+e.name+'</td><td>'+e.buyAmount+'</td><td>'+e.price+'</td></tr>';
                 });
                 str += '<tr><td colspan="2" class="border-right-0" style="text-align: left;">總價：</td><td class="border-left-0">NT$ '+data.total+'</td></tr></table>';
             } else {
