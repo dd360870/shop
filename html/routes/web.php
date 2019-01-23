@@ -35,6 +35,14 @@ Route::permanentRedirect('/home', '/');
 Route::get('/men', 'HomeController@men');
 Route::get('/women', 'HomeController@women');
 
+// order
+Route::group(
+    ['prefix' => 'order'], function() {
+        Route::get('/', 'OrderController@index')->name('order');
+        Route::get('/{id}', 'OrderController@detail');
+    }
+);
+
 // merchandise
 Route::group(
     ['prefix' => 'merchandise/{id}'], function() {

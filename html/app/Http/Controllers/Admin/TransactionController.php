@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Order;
 
 class TransactionController extends Controller
 {
@@ -14,6 +15,10 @@ class TransactionController extends Controller
 
     public function index(Request $request)
     {
-        return view('admin.transaction.index');
+        $orders = Order::all();
+        $binding = [
+            'orders' => $orders,
+        ];
+        return view('admin.transaction.index', $binding);
     }
 }

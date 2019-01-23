@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Auth;
 use App\Merchandise;
 use App\Order;
 use Validator;
@@ -83,7 +84,7 @@ class CartController extends Controller
                 $m->time = $cart->get($id)['time'];
                 $m->stockEnough = ($m->amount >= $cart->get($id)['amount']) ? true : false;
                 $m->buyAmount = $cart->get($id)['amount'];
-                $total += $m->price * $m->amount;
+                $total += $m->price * $m->buyAmount;
             }
             
 
@@ -183,6 +184,7 @@ class CartController extends Controller
             $Order = Order::create([
                 'user_id' => Auth::user()->id,
                 'pay_method' => $request->pay_method,
+                'paid' => true, //已付款
                 'delivery_method' => $request->delivery_method,
                 'delivery_name' => $request->delivery_name,
                 'delivery_address' => $request->delivery_address,
@@ -191,15 +193,23 @@ class CartController extends Controller
                 'total' => $total,
                 'delivery_traceID' => Str::uuid(),
             ]);
-            /* Create Order_items */
-
-
-
-            
+            /* Updating merchandises' amount */
             foreach($merchandises as $id => $m) {
                 $m->amount -= $cart->get($id)['amount'];
                 $m->save();
             }
+            /* Create Order_items */
+            foreach($merchandises as $id => $m) {
+                $m->amount = $cart->get($id)['amount'];
+                $m->merchandise_id = $m->id;
+                $m->order_id = $Order->id;
+                $m->price = $m->price;
+            }
+            $merchandises = $merchandises->values()->toArray();
+            $Order->items()->createMany($merchandises);
+
+            
+            
             /* Clear Shopping Cart */
             $request->session()->forget('cart');
             /* END TRANSACTION */
@@ -208,6 +218,11 @@ class CartController extends Controller
             DB::rollBack();
             return "<h1>".$e->getMessage()."</h1>";
         }
+        $request->session()->flash('alert', [
+            'type' => 'success',
+            'message' => 'Ordered completely. We\'ll deal with your order soon.'
+        ]);
+        return redirect()->route('order');
     }
 
     public function jsonDetail(Request $request)

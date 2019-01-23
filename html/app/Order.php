@@ -11,6 +11,7 @@ class Order extends Model
     protected $fillable = [
         'user_id',
         'pay_method',
+        'paid',
         'delivery_method',
         'delivery_name',
         'delivery_address',
@@ -19,4 +20,13 @@ class Order extends Model
         'total',
         'delivery_traceID',
     ];
+
+    public function items() {
+        return $this->hasMany('\App\OrderItem');
+    }
+
+    public function user() {
+        return $this->belongsTo('App\User');
+    }
+    
 }

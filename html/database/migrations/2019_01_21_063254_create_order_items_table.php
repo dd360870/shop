@@ -17,14 +17,15 @@ class CreateOrderItemsTable extends Migration
             $table->increments('id');
             $table->timestamps();
             $table->unsignedInteger('order_id');
-            $table->unsignedInteger('item_id');
+            $table->unsignedInteger('merchandise_id');
             $table->integer('amount');
+            $table->integer('price');
 
             $table->foreign('order_id')
                 ->references('id')->on('orders')
                 ->onDelete('restrict');
             
-            $table->foreign('item_id')
+            $table->foreign('merchandise_id')
                 ->references('id')->on('merchandises')
                 ->onDelete('restrict');
         });
