@@ -21,7 +21,7 @@
                     @endif
 
                     <div style="width:100%;">
-                    <img src="{{ $Merchandise->photo ? secure_asset('storage/'.$Merchandise->photo) : secure_asset('default-merchandise.jpg') }}" id="photoPreview" alt="..." class="img-thumbnail" style="width:300px; height:300px; object-fit:cover; margin:auto; display:block;">
+                    <img src="{{ $Merchandise->photo ? Storage::disk('s3')->url($Merchandise->photo) : secure_asset('default-merchandise.jpg') }}" id="photoPreview" alt="..." class="img-thumbnail" style="width:300px; height:300px; object-fit:cover; margin:auto; display:block;">
                     </div>
 
                     <form id="newForm" method="POST" enctype="multipart/form-data" action="/admin/merchandise/{{ $Merchandise->id }}">
@@ -47,10 +47,10 @@
                         </div>
                         <div class="form-group">
                             <label for="categoryInput">Category</label>
-                            <select class="form-control {{ $errors->has('category') ? ' is-invalid' : '' }}" id="categoryInput" name="category">
+                            <select class="form-control {{ $errors->has('category') ? ' is-invalid' : '' }}" id="categoryInput" name="category_id">
                                 @foreach ($categories as $c)
                                     @isset($c->lev3)
-                                        <option value="{{ $c->lev3_id }}">{{ $c->lev1.' -> '.$c->lev2.' -> '.$c->lev3.' [ '.$c->lev3_id.' ] ' }}</option>
+                                        <option value="{{ $c->lev3_id }}" {{ $Merchandise->category_id==$c->lev3_id ? 'selected':'' }}>{{ $c->lev1.' -> '.$c->lev2.' -> '.$c->lev3.' [ '.$c->lev3_id.' ] ' }}</option>
                                     @endisset
                                 @endforeach
                             </select>

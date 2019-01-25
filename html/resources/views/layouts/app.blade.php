@@ -22,7 +22,7 @@
 
 </head>
 <body>
-    <div id="app">
+    <div class="d-flex flex-column" style="min-height:100vh;" id="app">
         <nav class="navbar navbar-expand-md navbar-light navbar-laravel">
             <div class="container">
                 <a class="navbar-brand" href="{{ url('/') }}">
@@ -35,10 +35,10 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
                     <ul class="navbar-nav mr-auto">
-                        <li class="nav-item rounded @if(isset($type) ? ($type==2) : false) active @endif">
+                        <li class="nav-item rounded @if(isset($type) ? ($type==1) : false) active @endif">
                             <a class="nav-link" href="/men">MEN</a>
                         </li>
-                        <li class="nav-item rounded @if(isset($type) ? ($type==3) : false) active @endif">
+                        <li class="nav-item rounded @if(isset($type) ? ($type==2) : false) active @endif">
                             <a class="nav-link" href="/women">WOMEN</a>
                         </li>
                     </ul>
@@ -101,9 +101,18 @@
         <main class="py-4">
             @yield('content')
         </main>
+        <footer class="mt-auto">
+            <div class="py-2 bg-light border-top" style="width:100%;">
+                <div class="container" style="text-align:center;">
+                    <span class="text-muted">Copyright © 2019 by Ruzy</span>
+                </div>
+            </div>
+        </footer>
         @yield('script')
     </div>
+    
 </body>
+
 <script type="text/javascript">
 $('#shopping-cart').popover({
   trigger: 'hover',

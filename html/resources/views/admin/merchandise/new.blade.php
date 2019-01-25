@@ -46,7 +46,7 @@
                         </div>
                         <div class="form-group">
                             <label for="categoryInput">Category</label>
-                            <select class="form-control {{ $errors->has('category') ? ' is-invalid' : '' }}" id="categoryInput" name="category">
+                            <select class="form-control {{ $errors->has('category') ? ' is-invalid' : '' }}" id="categoryInput" name="category_id">
                                 @foreach ($categories as $c)
                                     @isset($c->lev3)
                                         <option value="{{ $c->lev3_id }}">{{ $c->lev1.' -> '.$c->lev2.' -> '.$c->lev3.' [ '.$c->lev3_id.' ] ' }}</option>

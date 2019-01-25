@@ -11,41 +11,46 @@
             @endif
             <div>
                 <div class="border-bottom border-left border-right p-3">
-                    <table class="table table-bordered">
-                        <thead>
-                            <th>User</th>
-                            <th>Merchandises</th>
-                            <th>Paid</th>
-                            <th>Status</th>
-                            <th>Created Time</th>
-                        </thead>
-                        <tbody>
-                            @foreach ($orders as $o)
-                                <tr>
-                                    <td>{{ $o->user->email }}</td>
-                                    <td>
+                    @foreach ($orders as $o)
+                        <div class="card mb-3">
+                            <div class="card-header" style="display:none;">
+                                Featured
+                            </div>
+                            <div class="card-body">
+                                <table class="table table-bordered" style="max-width:49%; display:inline-table">
+                                    <thead>
+                                        <tr>
+                                            <th>商品</th>
+                                            <th>ID</th>
+                                            <th>數量</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
                                         @foreach ($o->items as $i)
-                                            {{ $i->merchandise->name.'('.sprintf('%04d', $i->merchandise->id).') * '.$i->amount }}<br>
+                                            <tr>
+                                                <td>{{ $i->merchandise->name }}</td>
+                                                <td>{{ sprintf("%04d", $i->merchandise->id) }}</td>
+                                                <td>{{ $i->amount }}</td>
+                                            </tr>
                                         @endforeach
-                                    </td>
-                                    <td style="font-weight:bold;">
-                                        NT$ {{ $o->total }}
-                                        <span style="color:gray; font-size:1.5em;"> / </span>
-                                        {{ ([
-                                            'L'=>'LINE PAY',
-                                            'D'=>'貨到付款',
-                                            'S'=>'7-11取貨付款',
-                                            'C'=>'信用卡',
-                                            ])[$o->pay_method] }}
-                                        <span style="color:gray; font-size:1.5em;"> / </span>
-                                        <span style="color:{{ $o->paid ? '#3C3' : '#C22' }};">{{ $o->paid ? 'PAID' : 'NOT PAID'}}</span>
-                                    </td>
-                                    <td>{{ $o->status }}</td>
-                                    <td>{{ $o->created_at }}</td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                                    </tbody>
+                                </table>
+                                <table class="table table-bordered" style="max-width:49%; display:inline-table;">
+                                    <thead>
+                                    </thead>
+                                    <tbody>
+                                        <tr><th>付款方式</th><td>{{ Config::get('constants.pay_method')[$o->pay_method] }}</td></tr>
+                                        <tr><th>付款狀態</th><td style="color:white; background-color:{{ $o->paid ? 'olive':'tomato' }}">{{ $o->paid ? '已付款':'待付款' }}</td></tr>
+                                        <tr><th>寄送方式</th><td>{{ Config::get('constants.delivery_method')[$o->delivery_method] }}</td></tr>
+                                        <tr><th>收件人姓名</th><td>{{ $o->delivery_name }}</td></tr>
+                                        <tr><th>收件人電話</th><td>{{ $o->delivery_phone }}</td></tr>
+                                        <tr><th>收件人地址</th><td>{{ $o->delivery_address }}</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="card-footer">Footer</div>
+                        </div>
+                    @endforeach
                 </div>
             </div>
         </div>

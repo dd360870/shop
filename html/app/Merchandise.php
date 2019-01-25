@@ -17,7 +17,7 @@ class Merchandise extends Model
     protected $fillable = [
         'name',
         'intro',
-        'category',
+        'category_id',
         'price',
         'amount',
         'status',
@@ -32,29 +32,20 @@ class Merchandise extends Model
      */
     protected $hidden = [];
 
+    public function category() {
+        return $this->hasOne('App\Category', 'id', 'category_id');
+    }
+
     //取回正在販賣的商品
     public function scopeSelling($query) {
         return $query->where('status', '=', 'S');
     }
 
-    public function scopeCategory($query, $category)
-    {
-        return $query->where('category', $category);
+    public function scopeOfCategory($query, $category) {
+        return $query->where('category_id', $category);
     }
-
-    public function scopeFindId($query, $id) {
-        return Merchandise::select(
-                'merchandises.name as Mname',
-                'merchandises.id',
-                'merchandises.intro',
-                'merchandises.category',
-                'merchandises.price',
-                'merchandises.amount',
-                'merchandises.status',
-                'merchandises.barcode_EAN',
-                'merchandises.photo'
-            )
-            ->where('merchandises.id', $id)
-            ->join('category', 'merchandises.category', '=', 'category.id')->first();
+    
+    public function scopeInCategory($query, $category) {
+        return $query->whereIn('category_id', $category);
     }
 }

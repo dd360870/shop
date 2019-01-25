@@ -18,7 +18,7 @@ class CreateMerchandisesTable extends Migration
             $table->timestamps();
             $table->string('name');
             $table->string('intro');
-            $table->integer('category')->unsigned();
+            $table->integer('category_id')->unsigned();
             $table->integer('price');
             $table->integer('amount')->default(0);
             $table->string('status')->default('C');

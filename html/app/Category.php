@@ -31,4 +31,13 @@ class Category extends Model
 
         return $categories;
     }
+
+    public function getFullNameAttribute() {
+        $Category = $this->select('t1.name as lev1', 't2.name as lev2', 't3.name as lev3')
+            ->from('category as t1')
+            ->leftJoin('category as t2', 't2.parent', '=', 't1.id')
+            ->leftJoin('category as t3', 't3.parent', '=', 't2.id')
+            ->where('t3.id', $this->id)->first();
+        return $Category->lev1.'->'.$Category->lev2.'->'.$Category->lev3;
+    }
 }

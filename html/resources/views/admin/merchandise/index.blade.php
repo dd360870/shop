@@ -82,8 +82,8 @@
                                     Amount: {{ $m->amount }}<br>
                                     Status: <span style="color:{{ $m->status=='C' ? 'tomato' : 'olive'}};">{{
                                         $m->status=='C' ? 'Off' : 'Selling' }}</span><br>
-                                    Category: {{ $m->category }}<br>
-                                    id: {{ $m->id }}
+                                    Category: {{ $m->category->full_name.'['.$m->category->id.']' }}<br>
+                                    ID: {{ sprintf('%04d', $m->id) }}
                                 </p>
                             </div>
                             <div class="card-footer">

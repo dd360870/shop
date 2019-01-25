@@ -44,27 +44,6 @@ class CartController extends Controller
                 'time' => time(),
             ]);
         }
-
-        /*$cart = $request->session()->get('cart', null);
-        if(!empty($cart) && collect($cart)->contains('Mid', $request->Mid)) {
-            $cart = collect($cart);
-            $cart->transform(function($item, $key) use ($request) {
-                if($item['Mid'] == $request->Mid) {
-                    if($request->method == 'add')
-                        $item['amount'] += $request->amount;
-                    else
-                        $item['amount'] = $request->amount;
-                }
-                return $item;
-            });
-            $request->session()->put('cart', $cart->all());
-        }
-        else {
-            $request->session()->push('cart', [
-                'Mid' => $request->Mid,
-                'amount' => $request->amount,
-            ]);
-        }*/
         return $str;
     }
 

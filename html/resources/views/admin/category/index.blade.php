@@ -74,7 +74,7 @@
                                 @else
                                     <ul><li>
                                         @component('admin.category.addButton')
-                                            @slot('type') {{ $current_lev1 }} @endslot
+                                            @slot('type') {{ $current_lev1 ?? $categories[$i]->lev1_id }} @endslot
                                             {{ $categories[$i++]->lev1_id }}
                                         @endcomponent
                                     </li></ul>

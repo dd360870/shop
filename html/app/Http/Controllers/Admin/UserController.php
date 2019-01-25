@@ -23,10 +23,50 @@ class UserController extends Controller
     {
         $this->middleware('admin');
     }
+
     public function index(Request $request)
     {
+        if($request->has('input')) {
+            $users = User::where($request->column_name, 'like', '%'.$request->input.'%')->get();
+        } else {
+            $users = User::all();
+        }
+        $binding = [
+            'users' => $users,
+        ];
+        return view('admin.user.index', $binding);
+    }
+
+    public function add(Request $request)
+    {
+        Validator::make($request->all(), [
+            'email' => 'required | email',
+        ])->validate();
+
+        $User = User::where('email', $request->email)->first();
+        if(empty($User)) {
+            $binding = [
+                'users' => User::all(),
+                'alert' => [
+                    'type' => 'danger',
+                    'message' => 'User not found !',
+                ],
+            ];
+            return view('admin.user.index', $binding);
+        }
+        if($request->method == 'add') {
+            $User->admin = true;
+        } else {
+            $User->admin = false;
+        }
+        $User->save();
+
         $binding = [
             'users' => User::all(),
+            'alert' => [
+                'type' => 'success',
+                'message' => 'User'.'successfully be added to Admin.',
+            ],
         ];
         return view('admin.user.index', $binding);
     }

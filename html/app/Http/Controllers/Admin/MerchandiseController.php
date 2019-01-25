@@ -27,7 +27,7 @@ class MerchandiseController extends Controller
     public function index(Request $request)
     {
         $binding = [
-            'merchandises' => $request->category ? Merchandise::category($request->category)->get() : Merchandise::all(),
+            'merchandises' => $request->category ? Merchandise::ofCategory($request->category)->get() : Merchandise::all(),
             'categories' => Category::tree()->get(),
             'category' => $request->category,
         ];
@@ -48,7 +48,7 @@ class MerchandiseController extends Controller
         Validator::make($request->all(), [
             'name' => 'required',
             'intro' => 'required',
-            'category' => 'required',
+            'category_id' => 'required',
             'price' => 'required | integer | min:0',
             'amount' => 'required | integer | min:0',
             'status' => 'required | in:C,S',
@@ -103,7 +103,7 @@ class MerchandiseController extends Controller
         $Merchandise = Merchandise::findOrFail($id);
         $Merchandise->name = $request->name;
         $Merchandise->intro = $request->intro;
-        $Merchandise->category = $request->category;
+        $Merchandise->category_id = $request->category_id;
         $Merchandise->price = $request->price;
         $Merchandise->amount = $request->amount;
         $Merchandise->status = $request->status;

@@ -22,7 +22,7 @@
 
 </head>
 <body>
-    <div id="app">
+    <div class="d-flex flex-column" style="min-height:100vh;" id="app">
         <nav class="navbar navbar-expand-md navbar-light navbar-laravel">
             <div class="container">
                 <a class="navbar-brand" href="{{ url('/admin') }}">
@@ -81,6 +81,13 @@
         <main class="py-4">
             @yield('content')
         </main>
+        <footer class="mt-auto">
+            <div class="py-2 bg-light border-top" style="width:100%;">
+                <div class="container" style="text-align:center;">
+                    <span class="text-muted">Copyright © 2019 by Ruzy</span>
+                </div>
+            </div>
+        </footer>
         @yield('script')
     </div>
 </body>

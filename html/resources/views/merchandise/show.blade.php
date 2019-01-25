@@ -36,7 +36,7 @@
                         <img style="height:100%; width:100%;" src="{{ $Merchandise->photo ? Storage::disk('s3')->url($Merchandise->photo) : '/default-merchandise.jpg' }}">
                     </div>
                     <div style="padding:60px;">
-                        <h2>{{ $Merchandise->Mname }}</h2>
+                        <h2>{{ $Merchandise->name }}</h2>
                         <p style="color:#555;">{{ $Merchandise->intro }}</p>
                         <form action="/shopping-cart" class="form-inline" width="100%" id="addCartForm">
                             @csrf
