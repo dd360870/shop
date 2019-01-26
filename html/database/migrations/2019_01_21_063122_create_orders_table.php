@@ -17,15 +17,15 @@ class CreateOrdersTable extends Migration
             $table->increments('id');
             $table->timestamps();
             $table->unsignedInteger('user_id');
-            $table->string('pay_method');
-            $table->boolean('paid');
-            $table->string('delivery_method');
+            $table->string('payment_method', 1); #付款方式
+            $table->string('payment_status', 1)->default('N'); #付款狀態
+            $table->string('delivery_method', 1);
             $table->string('delivery_name');
             $table->string('delivery_address');
-            $table->string('delivery_phone');
-            $table->string('status');
+            $table->string('delivery_phone', 16);
+            $table->string('status', 1);
             $table->integer('total');
-            $table->string('delivery_traceID');
+            $table->string('delivery_traceID', 30); #物流追蹤條碼
 
             $table->foreign('user_id')
                 ->references('id')->on('users')

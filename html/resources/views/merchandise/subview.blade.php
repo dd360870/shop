@@ -5,24 +5,24 @@
     <div class="row justify-content-center">
         {{-- Category sidebar --}}
         <div class="col-lg-2">
-            @for ($i = 0, $count=count($categories); $i < $count;)
-                @if (isset($categories[$i]->lev3))
-                    <h4>{{ $categories[$i]->lev1 }}</h4>
-                    <ul>
-                    @for ($current_lev1=$categories[$i]->lev1_id; $i < $count && $categories[$i]->lev1_id==$current_lev1; )
-                        <li>{{ $categories[$i]->lev2 }}
-                            <ul>
-                            @for ($current_lev2=$categories[$i]->lev2_id; $i < $count && $categories[$i]->lev2_id==$current_lev2;$i++)
-                                <li><a href="{{ '?category='.$categories[$i]->lev3_id }}" style="color:black;
-                                    {{ app('request')->input('category')==$categories[$i]->lev3_id ? 'font-weight:bold;' : NULL }}
-                                ">{{ $categories[$i]->lev3 }}</a></li>
-                            @endfor
-                            </ul>
-                        </li>
-                    @endfor
-                    </ul>
+            <h4>{{ $categories[0]->lev1 }}</h4>
+            <ul>
+            @for ($i = 0, $count = count($categories); $i < $count; )
+                @if(isset($categories[$i]->lev3))
+                    <li>{{ $categories[$i]->lev2 }}
+                        <ul>
+                        @for ($current_lev2=$categories[$i]->lev2_id; $i < $count && $categories[$i]->lev2_id==$current_lev2;$i++)
+                            <li><a href="{{ '?category='.$categories[$i]->lev3_id }}" style="color:black;
+                                {{ app('request')->input('category')==$categories[$i]->lev3_id ? 'font-weight:bold;' : NULL }}
+                            ">{{ $categories[$i]->lev3 }}</a></li>
+                        @endfor
+                        </ul>
+                    </li>
+                @else
+                    @php $i++ @endphp
                 @endif
             @endfor
+            </ul>
         </div>
         {{-- Main content --}}
         <div class="col-lg-10">
