@@ -10,12 +10,15 @@ class OrderItem extends Model
 
     protected $fillable = [
         'order_id',
-        'merchandise_id',
+        'product_id',
         'amount',
         'price',
     ];
 
-    public function merchandise() {
-        return $this->belongsTo('App\Merchandise');
+    public function merchandiseInventory() {
+        return $this->hasOne('App\MerchandiseInventory',
+            'product_id',
+            'product_id'
+        );
     }
 }

@@ -4,24 +4,6 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-lg-2">
-            {{--@for ($i = 0, $count=count($categories); $i < $count;)
-                @if (isset($categories[$i]->lev3))
-                    <h4>{{ $categories[$i]->lev1 }}</h4>
-                    <ul>
-                    @for ($current_lev1=$categories[$i]->lev1_id; $i < $count && $categories[$i]->lev1_id==$current_lev1; )
-                        <li>{{ $categories[$i]->lev2 }}
-                            <ul>
-                            @for ($current_lev2=$categories[$i]->lev2_id; $i < $count && $categories[$i]->lev2_id==$current_lev2;$i++)
-                                <li><a href="{{ url()->current().'?category='.$categories[$i]->lev3_id }}" style="color:black;
-                                    {{ $category==$categories[$i]->lev3_id ? 'font-weight:bold;' : NULL }}
-                                ">{{ $categories[$i]->lev3 }}</a></li>
-                            @endfor
-                            </ul>
-                        </li>
-                    @endfor
-                    </ul>
-                @endif
-            @endfor--}}
             @for ($i = 0, $count = count($categories); $i < $count;)
                 <li>{{ $categories[$i]->lev1 }}
                     {{-- show lev2 elements --}}
@@ -34,8 +16,8 @@
                                     <ul>
                                     @for ($current_lev2=$categories[$i]->lev2_id; $i < $count && $categories[$i]->lev2_id == $current_lev2; $i++)
                                         <li>
-                                            <a href="?category={{$categories[$i]->lev3_id}}"
-                                                style="color:black; {{ $category==$categories[$i]->lev3_id ? 'font-weight:bold;' : NULL }}">
+                                            <a href="?category_id={{$categories[$i]->lev3_id}}"
+                                                style="color:black; {{ (app('request'))->category_id==$categories[$i]->lev3_id ? 'font-weight:bold;' : NULL }}">
                                                 {{ $categories[$i]->lev3 }}
                                             </a>
                                         </li>
@@ -72,18 +54,16 @@
                     <div class="card-deck" id="first-deck">
                         @foreach ($merchandises as $m)
                         <div class="card">
-                            <img class="card-img-top" src="{{ $m->photo ? Storage::disk('s3')->url($m->photo) : secure_asset('default-merchandise.jpg')}}"
-                                alt="">
+                            <img class="card-img-top" src="{{ $m->photo_path ? Storage::disk('s3')->url($m->photo_path) : secure_asset('default-merchandise.jpg')}}">
                             <div class="card-body">
                                 <h5 class="card-title"><a href="{{ secure_url('/admin/merchandise/'.$m->id) }}">{{
                                         $m->name }}</a></h5>
                                 <p class="card-text font-weight-bold">
                                     Price: {{ $m->price }}<br>
-                                    Amount: {{ $m->amount }}<br>
-                                    Status: <span style="color:{{ $m->status=='C' ? 'tomato' : 'olive'}};">{{
-                                        $m->status=='C' ? 'Off' : 'Selling' }}</span><br>
+                                    Selling: <span style="color:{{ $m->is_selling ? 'olive' : 'tomato'}};">{{
+                                        $m->is_selling ? 'ON' : 'OFF' }}</span><br>
                                     Category: {{ $m->category->full_name.'['.$m->category->id.']' }}<br>
-                                    ID: {{ sprintf('%04d', $m->id) }}
+                                    ID: {{ sprintf('%06d', $m->id) }}
                                 </p>
                             </div>
                             <div class="card-footer">

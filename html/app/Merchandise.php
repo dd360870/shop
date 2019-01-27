@@ -3,9 +3,12 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class Merchandise extends Model
 {
+    private $inventoryByColors;
+    private $colors;
 
     protected $table = 'merchandises';
 
@@ -19,10 +22,10 @@ class Merchandise extends Model
         'intro',
         'category_id',
         'price',
-        'amount',
-        'status',
-        'barcode_EAN',
-        'photo',
+        'photo_path',
+        'is_selling',
+        'size_min',
+        'size_max',
     ];
 
     /**
@@ -32,20 +35,57 @@ class Merchandise extends Model
      */
     protected $hidden = [];
 
+    protected $cast = [
+        'is_selling' => 'boolean',
+    ];
+
     public function category() {
         return $this->hasOne('App\Category', 'id', 'category_id');
     }
 
+    public function inventory() {
+        return $this->hasMany('App\MerchandiseInventory');
+    }
+
+    public function getPhotoPathAttribute() {
+        return 'i/'.sprintf("%06d", $this->id).'/'.sprintf("%06d", $this->id).'.jpeg';
+    }
+
+    public function getPhotoUrlAttribute() {
+        if(Storage::disk('s3')->exists($this->getPhotoPathAttribute())) {
+            return Storage::disk('s3')->url($this->getPhotoPathAttribute());
+        }
+        return secure_asset('default-merchandise.jpg');
+    }
+
+    public function getPhotoDirectoryAttribute() {
+        return 'i/'.sprintf("%06d", $this->id).'/';
+    }
+
+    public function getInventoryByColorsAttribute() {
+        if(!isset($this->inventoryByColors)) {
+            $this->inventoryByColors = $this->inventory()->select('color_id', 'merchandise_id')->distinct()->get();
+        }
+        return $this->inventoryByColors;
+    }
+
+    public function getColorsAttribute() {
+        if(! isset($this->colors)) {
+            $this->colors = $this->getInventoryByColorsAttribute()->pluck('color_id')->all();
+        }
+        return $this->colors;
+    }
+
     //取回正在販賣的商品
     public function scopeSelling($query) {
-        return $query->where('status', '=', 'S');
+        return $query->where('is_selling', '=', true);
     }
 
     public function scopeOfCategory($query, $category) {
         return $query->where('category_id', $category);
     }
     
-    public function scopeInCategory($query, $category) {
-        return $query->whereIn('category_id', $category);
+    public function scopeInCategories($query, $categories) {
+        return $query->whereIn('category_id', $categories);
     }
 }

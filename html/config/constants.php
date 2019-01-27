@@ -43,9 +43,18 @@ return [
             'name' => '紫',
             'hex' => 'a32ced',
         ],
+        6 => [
+            'name' => '白',
+            'hex' => 'ffffff',
+            'font-color' => 'black',
+        ],
+        7 => [
+            'name' => '黑',
+            'hex' => '000000',
+        ],
     ],
     'size' => [
-        0 => 'U', // Unify
+        0 => 'F', // One size
         1 => 'XS',
         2 => 'S',
         3 => 'M',

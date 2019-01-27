@@ -20,7 +20,10 @@ class CreateMerchandisesTable extends Migration
             $table->string('intro'); #商品介紹
             $table->unsignedInteger('category_id');
             $table->integer('price');
+            $table->string('photo_path')->default(NULL)->nullable();
             $table->boolean('is_selling')->default(false); #販售狀態
+            $table->unsignedTinyInteger('size_min')->default(0);
+            $table->unsignedTinyInteger('size_max')->default(0);
 
             $table->foreign('category_id')
                 ->references('id')->on('categories')

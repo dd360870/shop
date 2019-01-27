@@ -74,7 +74,7 @@ Route::group(
         Route::group(
             ['prefix' => '/merchandise/{id}'], function() {
                 Route::get('/', 'Admin\MerchandiseController@show');
-                Route::delete('/', 'Admin\MerchandiseController@show');
+                Route::delete('/', 'Admin\MerchandiseController@delete');
                 Route::get('/edit', 'Admin\MerchandiseController@edit');
                 Route::put('/', 'Admin\MerchandiseController@editProcess');
             }

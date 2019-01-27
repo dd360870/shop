@@ -1,5 +1,7 @@
 @extends('admin.base')
 
+@php $inventories = $Merchandise->inventory()->select('color_id', 'merchandise_id')->distinct()->get(); @endphp
+
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
@@ -21,7 +23,7 @@
                     @endif
 
                     <div style="width:100%;">
-                    <img src="{{ $Merchandise->photo ? Storage::disk('s3')->url($Merchandise->photo) : secure_asset('default-merchandise.jpg') }}" id="photoPreview" alt="..." class="img-thumbnail" style="width:300px; height:300px; object-fit:cover; margin:auto; display:block;">
+                        <img src="{{ $Merchandise->photoUrl }}" id="photoPreview" alt="..." class="img-thumbnail" style="width:300px; height:300px; object-fit:cover; margin:auto; display:block;">
                     </div>
 
                     <form id="newForm" method="POST" enctype="multipart/form-data" action="/admin/merchandise/{{ $Merchandise->id }}">
@@ -29,11 +31,15 @@
                         @method('put')
                         <div class="form-group">
                             <label>Photo</label>
-                            <div class="custom-file">
-                                <input type="file" class="custom-file-input {{ $errors->has('photo') ? ' is-invalid' : '' }}" id="photoInput" name="photo" accept="image/*">
-                                <label class="custom-file-label" for="photoInput">{{ $Merchandise->photo ? $Merchandise->photo : 'Please choose a photo...' }}</label>
-                                <div class="invalid-feedback"><strong>{{ $errors->first('photo') }}</strong></div>
-                            </div>
+                            <select class="form-control" id="main_photo" name="main_photo">
+                                <option value=""></option>
+                                @foreach(Storage::disk('s3')->files($Merchandise->photoDirectory) as $path)
+                                    <option value="{{ $path }}" data="{{ Storage::disk('s3')->url($path) }}"
+                                        @if ($path == $Merchandise->photoPath) selected @endif>
+                                        {{ $path }}
+                                    </option>
+                                @endforeach
+                            </select>
                         </div>
                         <div class="form-group">
                             <label for="nameInput">Name</label>
@@ -62,32 +68,65 @@
                             <div class="invalid-feedback"><strong>{{ $errors->first('price') }}</strong></div>
                         </div>
                         <div class="form-group">
-                            <label for="amountInput">Amount</label>
-                            <input type="number" class="form-control {{ $errors->has('amount') ? ' is-invalid' : '' }}" id="amountInput" name="amount" value="{{ $Merchandise->amount }}">
-                            <div class="invalid-feedback"><strong>{{ $errors->first('amount') }}</strong></div>
-                        </div>
-                        <div class="form-group">
-                            <label for="statusInput">Status</label><br />
+                            <label for="statusInput">Selling</label><br />
                             <div class="form-check form-check-inline">
-                            <input class="form-check-input {{ $errors->has('status') ? ' is-invalid' : '' }}" type="radio" name="status" id="radio1" value="S"
-                                @if ($Merchandise->status == 'S')
+                            <input class="form-check-input {{ $errors->has('is_selling') ? ' is-invalid' : '' }}" type="radio" name="is_selling" id="radio1" value="1"
+                                @if ($Merchandise->is_selling)
                                     checked
                                 @endif>
-                                <label class="form-check-label" for="radio1">On sheff</label>
+                                <label class="form-check-label" for="radio1">ON</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input {{ $errors->has('status') ? ' is-invalid' : '' }}" type="radio" name="status" id="radio2" value="C"
-                                @if ($Merchandise->status == 'C')
+                                <input class="form-check-input {{ $errors->has('is_selling') ? ' is-invalid' : '' }}" type="radio" name="is_selling" id="radio2" value="0"
+                                @if (!$Merchandise->is_selling)
                                     checked
                                 @endif>
-                                <label class="form-check-label" for="radio2">Off sheff</label>
+                                <label class="form-check-label" for="radio2">OFF</label>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="barcode_ean">EAN barcode (NULL)</label>
-                            <input type="text" class="form-control" id="barcode_ean" maxlength="13" name="barcode_ean" value="{{ $Merchandise->barcode_ean }}">
-                            <div class="invalid-feedback"><strong>{{ $errors->first('barcode_ean') }}</strong></div>
+                            <label>Color</label><br>
+                            @foreach (Config::get('constants.color') as $key => $color)
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="checkbox" name="color_id[]" value="{{ $key }}" @if($inventories->contains('color_id', $key)) checked @endif>
+                                    <label class="px-3 py-2 border form-check-label" style="
+                                        font-size:1.5em;
+                                        color:{{ isset($color['font-color']) ? '#'.$color['font-color'] : 'white' }};
+                                        background-color:{{ '#'.$color['hex'] }};">
+                                        {{ $color['name'] }}
+                                    </label>
+                                </div>
+                            @endforeach
                         </div>
+                        <table class="table table-bordered">
+                            <tr>
+                                <th>Photo</th>
+                                <th>Color</th>
+                                <th>Upload</th>
+                            </tr>
+                            @foreach ($Merchandise->inventoryByColors as $key => $inventory)
+                                <tr>
+                                    <td>
+                                        {{ $inventory->photoPath }}
+                                        <img src="{{ $inventory->photoUrl }}"
+                                        id="photoPreview{{ $key }}" class="img-thumbnail" style="width:250px; height:250px; object-fit:cover; margin:auto; display:block;">
+                                    </td>
+                                    <td style="background-color:#{{ Config::get('constants.color')[$inventory->color_id]['hex']}};"></td>
+                                    <td>
+                                        <div class="form-group">
+                                            <label>Photo</label>
+                                            <div class="custom-file">
+                                                <input type="file"
+                                                    class="photoInput custom-file-input {{ $errors->has('photo') ? ' is-invalid' : '' }}" id="photoInput{{ $key }}"
+                                                    name="photo_{{ $inventory->color_id }}" accept="image/*" value="{{ old('image') }}">
+                                                <label class="custom-file-label" for="photoInput">Choose a photo ...</label>
+                                                <div class="invalid-feedback"><strong>{{ $errors->first('photo') }}</strong></div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </table>
                         <button class="btn btn-primary" type="submit">Save</button>
                     </form>
                 </div>
@@ -102,7 +141,10 @@
 <script type="text/javascript">
 
     $(document).ready(function() {
-        $('#photoInput').on('change', function() {
+        $('#main_photo').on('change', function() {
+            $('#photoPreview')[0].src = this.options[this.selectedIndex].getAttribute('data')
+        });
+        $('.photoInput').on('change', function() {
             //get the file name
             var fileName = $(this).val();
             //replace the "Choose a file" label
@@ -120,12 +162,6 @@
                     number: true,
                     min: 0,
                 },
-                amount: {
-                    required: true,
-                    number: true,
-                    min: 0,
-                },
-                status: "required",
             },
             messages: {
                 
@@ -142,7 +178,7 @@
                 var reader = new FileReader();
 
                 reader.onload = function(e) {
-                    document.getElementById('photoPreview').src = e.target.result;
+                    document.getElementById('photoPreview'+input.id[10]).src = e.target.result;
                 }
 
                 reader.readAsDataURL(input.files[0]);
