@@ -36,12 +36,14 @@ class HomeController extends Controller
             /* 30日內最熱銷品項 */
             'hot_items' => Merchandise::rightJoin(
                 DB::raw('(
-                    SELECT merchandise_id, SUM(amount) AS sold_total
-                    FROM order_items
-                    WHERE created_at BETWEEN "'.$_30d_ago.'" AND "'.$today.'"
-                    GROUP BY merchandise_id
-                ) as order_items'),
-                'merchandises.id', '=', 'order_items.merchandise_id')->orderBy('sold_total', 'desc')->take(4)->get(),
+                        SELECT product_id, SUM(amount) AS sold_total
+                        FROM order_items
+                        WHERE created_at BETWEEN "'.$_30d_ago.'" AND "'.$today.'"
+                        GROUP BY product_id
+                    ) as order_items'),
+                'merchandises.id',
+                '=',
+                DB::raw('CAST(SUBSTRING(order_items.product_id, 1, 6) AS UNSIGNED INTEGER)'))->orderBy('sold_total', 'desc')->take(4)->get(),
         ];
         return view('home', $binding);
     }
@@ -60,7 +62,7 @@ class HomeController extends Controller
         $cate = Category::where('type', $type)->get()->pluck('id');
 
         $binding = [
-            'merchandises' => $request->category ? Merchandise::selling()->ofCategory($request->category)->get() : Merchandise::selling()->inCategory($cate)->get(),
+            'merchandises' => $request->category ? Merchandise::selling()->ofCategory($request->category)->get() : Merchandise::selling()->inCategories($cate)->get(),
             'categories' => Category::tree($type)->get(),
             'category' => $request->category,
             'type' => $type,

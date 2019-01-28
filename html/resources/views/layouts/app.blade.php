@@ -65,7 +65,7 @@
                                 @endif
                             </li>
                         @else
-                            @if(Auth::user()->admin == 1)
+                            @if(Auth::user()->is_admin)
                                 <li class="nav-item form-inline">
                                     <a href="/admin" role="button" class="btn btn-sm btn-danger" style="margin:auto;">Admin Panel</a>
                                 </li>

@@ -28,7 +28,7 @@
                             <tr>
                                 <td>
                                     @foreach ($o->items as $item)
-                                        {{ $item->merchandise->name.'*'.$item->amount }}<br>
+                                        {{ $item->merchandiseInventory->merchandise->name.'*'.$item->amount }}<br>
                                     @endforeach
                                 </td>
                                 <td>{{ $o->created_at }}</td>

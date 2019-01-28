@@ -54,7 +54,7 @@
                     <div class="card-deck" id="first-deck">
                         @foreach ($merchandises as $m)
                         <div class="card">
-                            <img class="card-img-top" src="{{ $m->photo_path ? Storage::disk('s3')->url($m->photo_path) : secure_asset('default-merchandise.jpg')}}">
+                            <img class="card-img-top" src="{{ $m->photoUrl}}">
                             <div class="card-body">
                                 <h5 class="card-title"><a href="{{ secure_url('/admin/merchandise/'.$m->id) }}">{{
                                         $m->name }}</a></h5>

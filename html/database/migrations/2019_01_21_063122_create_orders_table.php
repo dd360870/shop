@@ -23,9 +23,9 @@ class CreateOrdersTable extends Migration
             $table->string('delivery_name');
             $table->string('delivery_address');
             $table->string('delivery_phone', 16);
-            $table->string('status', 1);
+            $table->string('status');
             $table->integer('total');
-            $table->string('delivery_traceID', 30); #物流追蹤條碼
+            $table->string('delivery_traceID'); #物流追蹤條碼
 
             $table->foreign('user_id')
                 ->references('id')->on('users')

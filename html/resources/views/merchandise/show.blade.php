@@ -33,24 +33,40 @@
             <div style="max-height:500px;">
                 <div style="height:100%; width:100%; overflow: auto;">
                     <div style="height:100%; width:50%; padding:60px; float:left;">
-                        <img style="height:100%; width:100%;" src="{{ $Merchandise->photo ? Storage::disk('s3')->url($Merchandise->photo) : '/default-merchandise.jpg' }}">
+                        <img class="rounded border" style="height:100%; width:100%;" src="{{ $Merchandise->photoUrl }}">
                     </div>
                     <div style="padding:60px;">
                         <h2>{{ $Merchandise->name }}</h2>
                         <p style="color:#555;">{{ $Merchandise->intro }}</p>
-                        <form action="/shopping-cart" class="form-inline" width="100%" id="addCartForm">
+                        <form action="/shopping-cart" class="" width="100%" id="addCartForm">
                             @csrf
-                            <input class="form-control" type="number" min="1" max="49" value="1" style="max-width:60px;" name="amount">
                             <input value="{{ $Merchandise->id }}" style="display:none;" name="Mid">
                             <input value="add" style="display:none;" name="method">
-                            <input type="submit" class="btn btn-secondary" value="加入購物車"
-                                @if ($Merchandise->amount == 0)
-                                    disabled
-                                @endif>
+                            <div class="form-row p-2">
+                                @foreach ($Merchandise->inventoryByColors as $inventory)
+                                    <input class="color_picker" type="radio" name="color_id" value="{{ $inventory->color_id }}" required>
+                                    <label class="py-3 px-3" style="background-color: #{{ Config::get('constants.color')[$inventory->color_id]['hex'] }}"></label>
+                                @endforeach
+                            </div>
+                            <div class="form-row p-2">
+                                @foreach ($Merchandise->inventory as $i)
+                                    <div class="size_picker color_{{$i->color_id}}" style="display: none;" onclick="document.getElementById('input_pid').value='{{ $i->product_id }}';">
+                                        <input type="radio" name="size_id" value="{{$i->size_id}}" @if($i->amount == 0) disabled @endif required>
+                                        <label>{{ Config::get('constants.size')[$i->size_id] }}@if($i->amount == 0) [缺貨] @endif</label>
+                                    </div>
+                                @endforeach
+                            </div>
+                            <div class="form-row p-2">
+                                <input class="form-control mr-2" type="number" min="1" max="49" value="1" style="max-width:60px;" name="amount">
+                                <input type="submit" class="btn btn-secondary" value="加入購物車">
+                            </div>
+                            <div class="form-row">
+                                <label class="col-sm-4 col-form-label" >Product ID : </label>
+                                <div class="col-sm-8">
+                                    <input class="form-control-plaintext" id="input_pid" name="product_id">
+                                </div>
+                            </div>
                         </form>
-                        @if ($Merchandise->amount == 0)
-                            <span style="font-weight:bold;">目前無庫存</span>
-                        @endif
                     </div>
                 </div>
             </div>
@@ -61,7 +77,18 @@
 
 @section('script')
 <script type="text/javascript">
+$(document).ready(function() {
+    $('.color_picker').on('change', function() {
+        $('.size_picker').hide();
+        $('.color_'+this.value).show();
+    });
+});
 $("#addCartForm").submit(function(e) {
+    if ($('input[name=size_id]:checked', '#addCartForm').val() == null) {
+        alert('Size is required');
+        e.preventDefault();
+        return;
+    }
     var form = $(this);
     var url = form.attr('action');
 

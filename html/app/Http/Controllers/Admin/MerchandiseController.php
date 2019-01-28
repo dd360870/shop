@@ -31,7 +31,7 @@ class MerchandiseController extends Controller
     public function index(Request $request)
     {
         $binding = [
-            'merchandises' => $request->category ? Merchandise::ofCategory($request->category)->get() : Merchandise::all(),
+            'merchandises' => $request->category_id ? Merchandise::ofCategory($request->category_id)->get() : Merchandise::all(),
             'categories' => Category::tree()->get(),
         ];
         return view('admin.merchandise.index', $binding);

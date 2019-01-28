@@ -38,15 +38,15 @@
                 <div class="card-group" id="first-group">
                 @foreach ($merchandises as $m)
                     <div class="card">
-                        <img class="card-img-top" src="{{ $m->photo ? Storage::disk('s3')->url($m->photo) : 'default-merchandise.jpg' }}" alt="{{ $m->name }}">
-                        <div class="card-body" style="background-color:#eee;">
+                        <img class="card-img-top" src="{{ $m->photoUrl }}" alt="{{ $m->name }}">
+                        <div class="card-body p-1" style="background-color:#eee;">
                             <h5 class="card-title">
                                 <a href="/merchandise/{{ $m->id }}">{{ $m->name }}</a>
                             </h5>
                             <p class="card-text">NT$ {{ $m->price }}
-                                @if($m->amount < 1)
+                                {{--@if($m->amount < 1)
                                     <span style="color:#A33">無庫存</span>
-                                @endif
+                                @endif--}}
                             </p>
                         </div>
                         <div class="card-footer" style="display:none;"></div>

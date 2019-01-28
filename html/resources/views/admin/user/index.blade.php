@@ -45,7 +45,7 @@
                                     <td>{{ $u->name }}</td>
                                     <td>{{ $u->email }}</td>
                                     <td style="max-width:60px">
-                                        @if ($u->admin)
+                                        @if ($u->is_admin)
                                             <span style="color:red; font-weight:bold;">Admin</span>
                                             <form style="display:inline;" method="POST">
                                                 @csrf

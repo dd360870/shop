@@ -27,7 +27,7 @@
                                 <td>
                                     <form method="POST" action="/shopping-cart">
                                         <input name="amount" type="text" class="form-control setInput" value="{{ $c->buyAmount }}" style="text-align:center;">
-                                        <input name="Mid" value="{{ $c->id }}" style="display:none;">
+                                        <input name="product_id" value="{{ $c->product_id }}" style="display:none;">
                                         <input name="method" value="set" style="display:none;">
                                     </form>
                                     @if (!$c->stockEnough)
@@ -38,7 +38,7 @@
                                 <td>{{ $c->price * $c->buyAmount }}</td>
                                 <td>
                                     <form method="POST" class="deleteForm">
-                                        <input name="Mid" value="{{ $c->Mid }}" style="display:none;">
+                                        <input name="product_id" value="{{ $c->product_id }}" style="display:none;">
                                         <input name="method" value="set" style="display:none;">
                                         <input name="amount" value="0" style="display:none;">
                                         <button type="submit" style="background-color:transparent; border:transparent; margin:0; padding:0;">
@@ -114,13 +114,13 @@ function updateCart() {
                     str += '<tr><td>'+e.name+'</td><td>'
                         +'<form method="POST" action="/shopping-cart">\
                             <input name="amount" type="text" class="form-control setInput" value="'+e.buyAmount+'" style="text-align:center;">\
-                            <input name="Mid" value="'+e.Mid+'" style="display:none;">\
+                            <input name="product_id" value="'+e.product_id+'" style="display:none;">\
                             <input name="method" value="set" style="display:none;">\
                             </form>'+(e.stockEnough?'':'<span style="color:red; font-size:0.7em">庫存數量不足</span>')+'</td><td>'
                         +e.price+'</td><td>'
                         +e.price * e.buyAmount+'</td><td>'
                         +'<form method="POST" class="deleteForm">\
-                            <input name="Mid" value="'+e.Mid+'" style="display:none;">\
+                            <input name="product_id" value="'+e.product_id+'" style="display:none;">\
                             <input name="method" value="set" style="display:none;">\
                             <input name="amount" value="0" style="display:none;">\
                             <button type="submit" style="background-color:transparent; border:transparent; margin:0; padding:0;">\

@@ -28,7 +28,7 @@
                     <div class="container">
                         <div class="row">
                             <div class="col-md-6">
-                                <img src="{{ $Merchandise->photo_path ? Storage::disk('s3')->url($Merchandise->photo_path) : secure_url('default-merchandise.jpg') }}"
+                                <img src="{{ $Merchandise->photoUrl }}"
                                     alt=""
                                     class="img-thumbnail"
                                     style="width:600px; height:width; display:block; margin:auto;">

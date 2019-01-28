@@ -17,7 +17,7 @@ class MerchandiseInventory extends Model
     ];
 
     public function merchandise() {
-        return $this->hasOne('App\Merchandise');
+        return $this->hasOne('App\Merchandise', 'id', 'merchandise_id');
     }
 
     public function getPhotoPathAttribute() {

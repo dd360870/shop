@@ -23,6 +23,7 @@
                     <thead>
                         <tr>
                             <th>Merchandises</th>
+                            <th>Product ID</th>
                             <th>Amount/Price</th>
                             <th>Total</th>
                         </tr>
@@ -30,9 +31,10 @@
                     <tbody>
                     @foreach ($Order->items as $i)
                         <tr>
-                            <td>{{ $i->merchandise->name }}</td>
+                            <td>{{ $i->merchandiseInventory->merchandise->name }}</td>
+                            <td>{{ $i->product_id }}</td>
                             <td>{{ $i->amount.'*'.$i->price }}</td>
-                            <td>{{ $i->merchandise->price * $i->amount }}</td>
+                            <td>{{ $i->price * $i->amount }}</td>
                         </tr>
                     @endforeach
                     </tbody>
@@ -63,11 +65,11 @@
                     <tbody>
                         <tr>
                             <th>付款方法：</th>
-                            <td>{{ Config::get('constants.pay_method')[$Order->pay_method] }}</td>
+                            <td>{{ Config::get('constants.payment_method')[$Order->payment_method] }}</td>
                         </tr>
                         <tr>
                             <th>付款狀態：</th>
-                            <td>{{ $Order->paid ? '已付款' : '尚未付款' }}</td>
+                            <td>{{ Config::get('constants.payment_status')[$Order->payment_status] }}</td>
                         </tr>
                     </tbody>
                 </table>

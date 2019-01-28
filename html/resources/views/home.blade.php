@@ -15,7 +15,7 @@
                     <div class="card-group">
                         @foreach ($new_items as $item)
                             <div class="card" style="background-color: #EEE;">
-                                <img src="{{ $item->photo ? Storage::disk('s3')->url($item->photo) : secure_url('default-merchandise.jpg') }}" class="card-img-top">
+                                <img src="{{ $item->photoUrl }}" class="card-img-top">
                                 <div class="p-2" style="overflow:auto;">
                                     <h5 class=""><a href="{{ '/merchandise/'.$item->id }}">{{ $item->name }}</a></h5>
                                     <p class="text-muted m-0" style="float:right;">NT$ {{ $item->price }}</p>
@@ -29,7 +29,7 @@
                     <div class="card-group">
                         @foreach ($hot_items as $item)
                             <div class="card" style="background-color: #EEE;">
-                                <img src="{{ $item->photo ? Storage::disk('s3')->url($item->photo) : secure_url('default-merchandise.jpg') }}" class="card-img-top">
+                                <img src="{{ $item->photoUrl }}" class="card-img-top">
                                 <div class="p-2" style="overflow:auto;">
                                     <h5 class=""><a href="{{ '/merchandise/'.$item->id }}">{{ $item->name }}</a></h5>
                                     <p class="text-muted m-0" style="float:right;">NT$ {{ $item->price }}</p>
