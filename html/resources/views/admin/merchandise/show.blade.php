@@ -54,6 +54,7 @@
                                 </div>
                             </div>
                         </div>
+                        {{--
                         <div class="row">
                             <table class="table table-bordered" style="font-size:1em; text-align:center; padding:0; margin: 0;">
                                 <tr>
@@ -76,6 +77,7 @@
                             @endforeach
                             </table>
                         </div>
+                        --}}
                     </div>
                 </div>
             </div>

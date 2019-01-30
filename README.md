@@ -19,11 +19,11 @@
 使用者 alice@example.com/123456<br>
 管理者 bob@example.com/123456<br>
 
-[link](https://example.com)
+[link](https://thawing-waters-59421.herokuapp.com/)
 
 ---
 ## DB Schema
-![](images/schema.png)
+![](/images/schema.png)
 <table>
 <tr><th>Table Name</th><th>Functionality</th></tr>
 <tr><td>Users</td><td>儲存使用者清單</td></tr>
