@@ -21,17 +21,23 @@ class CreateMerchandiseInventoryTable extends Migration
             $table->unsignedTinyInteger('color_id');
             $table->unsignedTinyInteger('size_id');
             $table->unsignedInteger('amount')->default(0);
-            $table->string('product_id', 10)
-                ->virtualAs('CONCAT(LPAD(merchandise_id, 6, "0"),
+            /*$table->string('product_id', 10)
+                ->storedAs('CONCAT(LPAD(merchandise_id, 6, "0"),
                     LPAD(color_id, 2, "0"),
                     LPAD(size_id, 1, "0")
                 )')
-                ->unique();
+                ->unique();*/
 
             $table->foreign('merchandise_id')
                 ->references('id')->on('merchandises')
                 ->onDelete('restrict');
         });
+        //mariadb on heroku not support keyword "stored", so use "persistent"
+        DB::statement('ALTER TABLE merchandise_inventory ADD COLUMN `product_id` varchar(10) as (CONCAT(LPAD(merchandise_id, 6, "0"),
+            LPAD(color_id, 2, "0"),
+            LPAD(size_id, 1, "0"))
+        ) persistent ');
+        DB::statement('ALTER TABLE merchandise_inventory ADD INDEX `product_id` (`product_id`)');
     }
 
     /**
