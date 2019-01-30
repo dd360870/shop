@@ -12,7 +12,7 @@
                     <li>{{ $categories[$i]->lev2 }}
                         <ul>
                         @for ($current_lev2=$categories[$i]->lev2_id; $i < $count && $categories[$i]->lev2_id==$current_lev2;$i++)
-                            <li><a href="{{ '?category='.$categories[$i]->lev3_id }}" style="color:black;
+                            <li><a href="/{{ Config::get('constants.type')[$type].'?category='.$categories[$i]->lev3_id }}" style="color:black;
                                 {{ app('request')->input('category')==$categories[$i]->lev3_id ? 'font-weight:bold;' : NULL }}
                             ">{{ $categories[$i]->lev3 }}</a></li>
                         @endfor

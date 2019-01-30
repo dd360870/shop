@@ -111,7 +111,7 @@ class CartController extends Controller
                 $inventory->buyAmount = $cart->get($pid)['amount'];
                 $inventory->name = $inventory->merchandise->name;
                 $inventory->price = $inventory->merchandise->price;
-                $total += $inventory->price * $inventory->amount;
+                $total += $inventory->price * $inventory->buyAmount;
             }
         }
 

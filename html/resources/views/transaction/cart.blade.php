@@ -23,7 +23,10 @@
                         </tr>
                         @foreach ($cart as $c)
                             <tr>
-                                <td>{{ $c->name }}</td>
+                                <td>
+                                    {{ $c->name.' - '.Config::get('constants.color')[$c->color_id]['name'].'/'.Config::get('constants.size')[$c->size_id] }}
+                                    <span class="text-muted">({{ $c->product_id }})</span>
+                                </td>
                                 <td>
                                     <form method="POST" action="/shopping-cart">
                                         <input name="amount" type="text" class="form-control setInput" value="{{ $c->buyAmount }}" style="text-align:center;">
