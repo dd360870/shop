@@ -48,6 +48,9 @@
                         <li class="nav-item rounded @if(Request::segment(2)=='transaction') active @endif">
                             <a class="nav-link" href="/admin/transaction">Transaction</a>
                         </li>
+                        <li class="nav-item rounded @if(Request::segment(2)=='inventory') active @endif">
+                            <a class="nav-link" href="/admin/inventory">Inventory</a>
+                        </li>
                     </ul>
                     <!-- Right Side Of Navbar -->
                     <ul class="navbar-nav ml-auto">

@@ -28,8 +28,8 @@
                                     <tbody>
                                         @foreach ($o->items as $i)
                                             <tr>
-                                                <td>{{ $i->merchandise->name }}</td>
-                                                <td>{{ sprintf("%04d", $i->merchandise->id) }}</td>
+                                                <td>{{ $i->merchandiseInventory->merchandise->name }}</td>
+                                                <td>{{ $i->product_id }}</td>
                                                 <td>{{ $i->amount }}</td>
                                             </tr>
                                         @endforeach

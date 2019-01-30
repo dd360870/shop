@@ -99,5 +99,12 @@ Route::group(
                 Route::post('/add', 'Admin\CategoryController@add');
             }
         );
+        // Inventory
+        Route::group(
+            ['prefix' => 'inventory'], function() {
+                Route::get('/', 'Admin\InventoryController@index');
+                Route::patch('/{id}', 'Admin\InventoryController@inStock');
+            }
+        );
     }
 );

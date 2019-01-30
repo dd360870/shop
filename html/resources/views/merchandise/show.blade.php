@@ -33,7 +33,7 @@
             <div style="max-height:500px;">
                 <div style="height:100%; width:100%; overflow: auto;">
                     <div style="height:100%; width:50%; padding:60px; float:left;">
-                        <img class="rounded border" style="height:100%; width:100%;" src="{{ $Merchandise->photoUrl }}">
+                        <img id="main_img" class="rounded border" style="height:100%; width:100%;" src="{{ $Merchandise->photoUrl }}">
                     </div>
                     <div style="padding:60px;">
                         <h2>{{ $Merchandise->name }}</h2>
@@ -50,8 +50,9 @@
                             </div>
                             <div class="form-row p-2">
                                 @foreach ($Merchandise->inventory as $i)
-                                    <div class="size_picker color_{{$i->color_id}}" style="display: none;" onclick="document.getElementById('input_pid').value='{{ $i->product_id }}';">
-                                        <input type="radio" name="size_id" value="{{$i->size_id}}" @if($i->amount == 0) disabled @endif required>
+                                    <div class="size_picker color_{{$i->color_id}}" style="display: none;">
+                                        <input type="radio" name="size_id" onclick="document.getElementById('input_pid').value='{{ $i->product_id }}';"
+                                            value="{{$i->size_id}}" @if($i->amount == 0) disabled @endif required>
                                         <label>{{ Config::get('constants.size')[$i->size_id] }}@if($i->amount == 0) [缺貨] @endif</label>
                                     </div>
                                 @endforeach
@@ -77,8 +78,14 @@
 
 @section('script')
 <script type="text/javascript">
+function imageUrl(mid, cid) {
+    let str_mid = mid.toString().padStart(6, '0');
+    let str_cid = cid.toString().padStart(2, '0');
+    return '{{Storage::disk("s3")->url("/i/")}}'+str_mid+'/'+str_mid+str_cid+'.jpeg';
+}
 $(document).ready(function() {
     $('.color_picker').on('change', function() {
+        document.getElementById('main_img').src = imageUrl({{$Merchandise->id}}, this.value);
         $('.size_picker').hide();
         $('.color_'+this.value).show();
     });
