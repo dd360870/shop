@@ -32,33 +32,33 @@
                     <div class="form-group border-top pt-2">
                         <label>Pay Method</label>
                         <div class="form-check">
-                            <input class="form-check-input @if ($errors->has('pay_method')) is-invalid @endif"
-                                type="radio" name="pay_method" value="D"
-                                @if (old('pay_method')=='D') checked @endif>
+                            <input class="form-check-input @if ($errors->has('payment_method')) is-invalid @endif"
+                                type="radio" name="payment_method" value="D"
+                                @if (old('payment_method')=='D') checked @endif>
                             <label class="form-check-label">
                                 貨到付款
                             </label>
                         </div>
                         <div class="form-check">
-                            <input class="form-check-input @if ($errors->has('pay_method')) is-invalid @endif"
-                                type="radio" name="pay_method" value="C"
-                                @if (old('pay_method')=='C') checked @endif>
+                            <input class="form-check-input @if ($errors->has('payment_method')) is-invalid @endif"
+                                type="radio" name="payment_method" value="C"
+                                @if (old('payment_method')=='C') checked @endif>
                             <label class="form-check-label">
                                 Credit Card
                             </label>
                         </div>
                         <div class="form-check">
-                            <input class="form-check-input @if ($errors->has('pay_method')) is-invalid @endif"
-                                type="radio" name="pay_method" value="L"
-                                @if (old('pay_method')=='L') checked @endif>
+                            <input class="form-check-input @if ($errors->has('payment_method')) is-invalid @endif"
+                                type="radio" name="payment_method" value="L"
+                                @if (old('payment_method')=='L') checked @endif>
                             <label class="form-check-label">
                                 LINE PAY
                             </label>
                         </div>
                         <div class="form-check">
-                            <input class="form-check-input @if ($errors->has('pay_method')) is-invalid @endif"
-                                type="radio" name="pay_method" value="S"
-                                @if (old('pay_method')=='S') checked @endif>
+                            <input class="form-check-input @if ($errors->has('payment_method')) is-invalid @endif"
+                                type="radio" name="payment_method" value="S"
+                                @if (old('payment_method')=='S') checked @endif>
                             <label class="form-check-label">
                                 7-11取貨付款
                             </label>
@@ -102,7 +102,7 @@ $(document).ready(function() {
     $("#checkout-form").validate({
         rules: {
             // no quoting necessary
-            pay_method: {
+            payment_method: {
                 required: true,
             },
             delivery_method:{

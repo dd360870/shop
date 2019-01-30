@@ -16,14 +16,18 @@ class CreateMerchandisesTable extends Migration
         Schema::create('merchandises', function (Blueprint $table) {
             $table->increments('id');
             $table->timestamps();
-            $table->string('name');
-            $table->string('intro');
-            $table->integer('category_id')->unsigned();
+            $table->string('name'); #商品名稱
+            $table->string('intro'); #商品介紹
+            $table->unsignedInteger('category_id');
             $table->integer('price');
-            $table->integer('amount')->default(0);
-            $table->string('status')->default('C');
-            $table->string('barcode_EAN', 13)->nullable()->unique();
-            $table->string('photo')->nullable();
+            $table->string('photo_path')->default(NULL)->nullable();
+            $table->boolean('is_selling')->default(false); #販售狀態
+            $table->unsignedTinyInteger('size_min')->default(0);
+            $table->unsignedTinyInteger('size_max')->default(0);
+
+            $table->foreign('category_id')
+                ->references('id')->on('categories')
+                ->onDelete('restrict');
         });
     }
 

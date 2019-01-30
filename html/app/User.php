@@ -29,7 +29,7 @@ class User extends Authenticatable
     ];
 
     protected $cast = [
-        'admin' => 'boolean',
+        'is_admin' => 'boolean',
     ];
 
     public function scopeOfAdmin($query) {

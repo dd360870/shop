@@ -5,24 +5,24 @@
     <div class="row justify-content-center">
         {{-- Category sidebar --}}
         <div class="col-lg-2">
-            @for ($i = 0, $count=count($categories); $i < $count;)
-                @if (isset($categories[$i]->lev3))
-                    <h4>{{ $categories[$i]->lev1 }}</h4>
-                    <ul>
-                    @for ($current_lev1=$categories[$i]->lev1_id; $i < $count && $categories[$i]->lev1_id==$current_lev1; )
-                        <li>{{ $categories[$i]->lev2 }}
-                            <ul>
-                            @for ($current_lev2=$categories[$i]->lev2_id; $i < $count && $categories[$i]->lev2_id==$current_lev2;$i++)
-                                <li><a href="{{ '?category='.$categories[$i]->lev3_id }}" style="color:black;
-                                    {{ app('request')->input('category')==$categories[$i]->lev3_id ? 'font-weight:bold;' : NULL }}
-                                ">{{ $categories[$i]->lev3 }}</a></li>
-                            @endfor
-                            </ul>
-                        </li>
-                    @endfor
-                    </ul>
+            <h4>{{ $categories[0]->lev1 }}</h4>
+            <ul>
+            @for ($i = 0, $count = count($categories); $i < $count; )
+                @if(isset($categories[$i]->lev3))
+                    <li>{{ $categories[$i]->lev2 }}
+                        <ul>
+                        @for ($current_lev2=$categories[$i]->lev2_id; $i < $count && $categories[$i]->lev2_id==$current_lev2;$i++)
+                            <li><a href="{{ '?category='.$categories[$i]->lev3_id }}" style="color:black;
+                                {{ app('request')->input('category')==$categories[$i]->lev3_id ? 'font-weight:bold;' : NULL }}
+                            ">{{ $categories[$i]->lev3 }}</a></li>
+                        @endfor
+                        </ul>
+                    </li>
+                @else
+                    @php $i++ @endphp
                 @endif
             @endfor
+            </ul>
         </div>
         {{-- Main content --}}
         <div class="col-lg-10">
@@ -38,15 +38,15 @@
                 <div class="card-group" id="first-group">
                 @foreach ($merchandises as $m)
                     <div class="card">
-                        <img class="card-img-top" src="{{ $m->photo ? Storage::disk('s3')->url($m->photo) : 'default-merchandise.jpg' }}" alt="{{ $m->name }}">
-                        <div class="card-body" style="background-color:#eee;">
+                        <img class="card-img-top" src="{{ $m->photoUrl }}" alt="{{ $m->name }}">
+                        <div class="card-body p-1" style="background-color:#eee;">
                             <h5 class="card-title">
                                 <a href="/merchandise/{{ $m->id }}">{{ $m->name }}</a>
                             </h5>
                             <p class="card-text">NT$ {{ $m->price }}
-                                @if($m->amount < 1)
+                                {{--@if($m->amount < 1)
                                     <span style="color:#A33">無庫存</span>
-                                @endif
+                                @endif--}}
                             </p>
                         </div>
                         <div class="card-footer" style="display:none;"></div>

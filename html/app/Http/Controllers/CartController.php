@@ -8,6 +8,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use App\Merchandise;
 use App\Order;
+use App\MerchandiseInventory;
 use Validator;
 use Exception;
 
@@ -18,17 +19,17 @@ class CartController extends Controller
         $str = "已新增商品至購物車中";
         Validator::make($request->all(), [
             'method' => 'required | in:add,set',
-            'Mid' => 'required | digits_between:1,10',
             'amount' => 'required | integer | between:0,100',
+            'product_id' => 'required | string | size:9',
         ])->validate();
 
-        $cart = collect($request->session()->get('cart', null))->keyBy('Mid');
-        if(!$cart->isEmpty() && $cart->contains('Mid', $request->Mid)) {
+        $cart = collect($request->session()->get('cart', null))->keyBy('product_id');
+        if(!$cart->isEmpty() && $cart->contains('product_id', $request->product_id)) {
             if($request->method == 'set' && $request->amount == 0) {
-                $cart->forget($request->Mid);
+                $cart->forget($request->product_id);
                 $str = "已從購物車中移除商品";
             } else {
-                $m = $cart->pull($request->Mid);
+                $m = $cart->pull($request->product_id);
                 if($request->method == 'add')
                     $m['amount'] += $request->amount;
                 else
@@ -39,7 +40,7 @@ class CartController extends Controller
             $request->session()->put('cart', $cart->values()->all());
         } else {
             $request->session()->push('cart', [
-                'Mid' => $request->Mid,
+                'product_id' => $request->product_id,
                 'amount' => $request->amount,
                 'time' => time(),
             ]);
@@ -53,23 +54,24 @@ class CartController extends Controller
         $total = 0;
         if($request->session()->has('cart')) {
             $cart = collect($request->session()->get('cart'));
-            $ids = $cart->pluck('Mid');
-            $merchandises = Merchandise::select('id', 'name', 'price', 'amount')->whereIn('id', $ids)->get();
-            $cart = $cart->keyBy('Mid');
-            $merchandises = $merchandises->keyBy('id');
+            $ids = $cart->pluck('product_id');
+            $Inventories = MerchandiseInventory::whereIn('product_id', $ids)->get();
+            $cart = $cart->keyBy('product_id');
+            $Inventories = $Inventories->keyBy('product_id');
 
-            foreach ($merchandises as $id => $m) {
-                $m->Mid = $m->id;
-                $m->time = $cart->get($id)['time'];
-                $m->stockEnough = ($m->amount >= $cart->get($id)['amount']) ? true : false;
-                $m->buyAmount = $cart->get($id)['amount'];
-                $total += $m->price * $m->buyAmount;
+            foreach ($Inventories as $Pid => $i) {
+                $i->time = $cart->get($Pid)['time'];
+                $i->stockEnough = ($i->amount >= $cart->get($Pid)['amount']) ? true : false;
+                $i->buyAmount = $cart->get($Pid)['amount'];
+                $i->price = $i->merchandise->price;
+                $i->name = $i->merchandise->name;
+                $total += $i->price * $i->buyAmount;
             }
             
 
         }
         $binding = [
-            'cart' => isset($merchandises) ? $merchandises->sortBy('time')->values()->all() : null,
+            'cart' => isset($Inventories) ? $Inventories->sortBy('time')->values()->all() : null,
             //'raw' => print_r($request->session()->get('cart')),
             'total' => $total,
         ];
@@ -87,7 +89,7 @@ class CartController extends Controller
     {
         /* validate */
         Validator::make($request->all(), [
-            'pay_method' => 'required|in:D,C,L,S',
+            'payment_method' => 'required|in:D,C,L,S',
             'delivery_method' => 'required|in:S,D',
             'delivery_name' => 'required',
             'delivery_phone' => 'required|regex:/^09[0-9]{8}$/',
@@ -95,26 +97,28 @@ class CartController extends Controller
         ])->validate();
 
         $total = 0;
-        $merchandises = collect([]);
+        $inventories = collect([]);
         if($request->session()->has('cart')) {
             $cart = collect($request->session()->get('cart'));
-            $ids = $cart->pluck('Mid');
-            $merchandises = Merchandise::select('id', 'name', 'price', 'amount')->whereIn('id', $ids)->get();
+            $ids = $cart->pluck('product_id');
+            $inventories = MerchandiseInventory::whereIn('product_id', $ids)->get();
 
-            $cart = $cart->keyBy('Mid');
-            $merchandises = $merchandises->keyBy('id');
+            $cart = $cart->keyBy('product_id');
+            $inventories = $inventories->keyBy('product_id');
 
-            foreach ($merchandises as $key => $value) {
-                $value->stockEnough = ($value->amount >= $cart->get($key)['amount']) ? true : false;
-                $value->amount = $cart->get($key)['amount'];
-                $total += $value->price * $value->amount;
+            foreach ($inventories as $pid => $inventory) {
+                $inventory->stockEnough = ($inventory->amount >= $cart->get($pid)['amount']) ? true : false;
+                $inventory->buyAmount = $cart->get($pid)['amount'];
+                $inventory->name = $inventory->merchandise->name;
+                $inventory->price = $inventory->merchandise->price;
+                $total += $inventory->price * $inventory->buyAmount;
             }
         }
 
         $binding = [
-            'cart' => isset($merchandises) ? $merchandises->all() : null,
+            'cart' => isset($inventories) ? $inventories->all() : null,
             'total' => $total,
-            'pay_method' => $request->pay_method,
+            'payment_method' => $request->payment_method,
             'delivery_method' => $request->delivery_method,
             'delivery_address' => $request->delivery_address,
             'delivery_name' => $request->delivery_name,
@@ -126,7 +130,7 @@ class CartController extends Controller
     public function checkoutProcess(Request $request) {
         /* validate */
         Validator::make($request->all(), [
-            'pay_method' => 'required|in:D,C,L,S',
+            'payment_method' => 'required|in:D,C,L,S',
             'delivery_method' => 'required|in:S,D',
             'delivery_name' => 'required',
             'delivery_phone' => 'required|regex:/^09[0-9]{8}$/',
@@ -135,23 +139,24 @@ class CartController extends Controller
         try {
             /* BEGIN TRANSACTION */
             DB::beginTransaction();
-            $merchandises = collect([]);
+            $inventories = collect([]);
             $total = 0;
             if($request->session()->has('cart') && count($request->session()->get('cart')) > 0) {
                 $stockEnough = true;
                 $cart = collect($request->session()->get('cart'));
-                $ids = $cart->pluck('Mid');
-                $merchandises = Merchandise::select('id', 'name', 'price', 'amount')->whereIn('id', $ids)->get();
+                $ids = $cart->pluck('product_id');
+                $inventories = MerchandiseInventory::whereIn('product_id', $ids)->get();
 
-                $cart = $cart->keyBy('Mid');
-                $merchandises = $merchandises->keyBy('id');
+                $cart = $cart->keyBy('product_id');
+                $inventories = $inventories->keyBy('product_id');
 
-                foreach ($merchandises as $id => $m) {
-                    $buy_amount = $cart->get($id)['amount'];
-                    if ($m->amount < $buy_amount) {
+                foreach ($inventories as $pid => $inventory) {
+                    $buy_amount = $cart->get($pid)['amount'];
+                    if ($inventory->amount < $buy_amount) {
                         $stockEnough = false;
+                        break;
                     }
-                    $total += $buy_amount * $m->price;
+                    $total += $buy_amount * $inventory->merchandise->price;
                     //$cart->get($key)['amount'];
                 }
                 if(!$stockEnough)
@@ -162,8 +167,8 @@ class CartController extends Controller
             /* Create Order */
             $Order = Order::create([
                 'user_id' => Auth::user()->id,
-                'pay_method' => $request->pay_method,
-                'paid' => true, //已付款
+                'payment_method' => $request->payment_method,
+                'payment_status' => 'N', //付款
                 'delivery_method' => $request->delivery_method,
                 'delivery_name' => $request->delivery_name,
                 'delivery_address' => $request->delivery_address,
@@ -173,19 +178,18 @@ class CartController extends Controller
                 'delivery_traceID' => Str::uuid(),
             ]);
             /* Updating merchandises' amount */
-            foreach($merchandises as $id => $m) {
-                $m->amount -= $cart->get($id)['amount'];
-                $m->save();
+            foreach($inventories as $pid => $inventory) {
+                $inventory->amount -= $cart->get($pid)['amount'];
+                $inventory->save();
             }
             /* Create Order_items */
-            foreach($merchandises as $id => $m) {
-                $m->amount = $cart->get($id)['amount'];
-                $m->merchandise_id = $m->id;
-                $m->order_id = $Order->id;
-                $m->price = $m->price;
+            foreach($inventories as $pid => $inventory) {
+                $inventory->amount = $cart->get($pid)['amount'];
+                $inventory->order_id = $Order->id;
+                $inventory->price = $inventory->merchandise->price;
             }
-            $merchandises = $merchandises->values()->toArray();
-            $Order->items()->createMany($merchandises);
+            $inventories = $inventories->values()->toArray();
+            $Order->items()->createMany($inventories);
 
             
             
@@ -206,29 +210,31 @@ class CartController extends Controller
 
     public function jsonDetail(Request $request)
     {
+        //$request->session()->forget('cart');
         $total = 0;
-        $merchandises = collect([]);
+        $merchandiseInventory = collect([]);
         if($request->session()->has('cart')) {
             $cart = collect($request->session()->get('cart'));
-            $ids = $cart->pluck('Mid');
-            $merchandises = Merchandise::select('id', 'name', 'price', 'amount')->whereIn('id', $ids)->get();
+            $ids = $cart->pluck('product_id');
+            $merchandiseInventory = MerchandiseInventory::whereIn('product_id', $ids)->get();
 
-            $cart = $cart->keyBy('Mid');
-            $merchandises = $merchandises->keyBy('id');
+            $cart = $cart->keyBy('product_id');
+            $merchandiseInventory = $merchandiseInventory->keyBy('product_id');
 
-            foreach ($merchandises as $id => $m) {
-                $m->Mid = $m->id;
-                $m->buyAmount = $cart->get($id)['amount'];
-                $m->time = $cart->get($id)['time'];
-                $m->stockEnough = ($m->amount >= $m->buyAmount) ? true : false;
-                $total += $m->price * $m->buyAmount;
+            foreach ($merchandiseInventory as $Pid => $MI) {
+                $MI->buyAmount = $cart->get($Pid)['amount'];
+                $MI->time = $cart->get($Pid)['time'];
+                $MI->stockEnough = ($MI->amount >= $MI->buyAmount) ? true : false;
+                $MI->name = $MI->merchandise->name;
+                $MI->price = $MI->merchandise->price;
+                $total += $MI->price * $MI->buyAmount;
             }
         }
-        $merchandises = $merchandises->sortBy('time')->values()->toArray();
+        $merchandiseInventory = $merchandiseInventory->sortBy('time')->values()->toArray();
         return response()->json([
-            'count' => count($merchandises),
+            'count' => count($merchandiseInventory),
             'total' => $total,
-            'detail' => $merchandises,
+            'detail' => $merchandiseInventory,
         ]);
     }
 }

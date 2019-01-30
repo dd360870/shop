@@ -74,7 +74,7 @@ Route::group(
         Route::group(
             ['prefix' => '/merchandise/{id}'], function() {
                 Route::get('/', 'Admin\MerchandiseController@show');
-                Route::delete('/', 'Admin\MerchandiseController@show');
+                Route::delete('/', 'Admin\MerchandiseController@delete');
                 Route::get('/edit', 'Admin\MerchandiseController@edit');
                 Route::put('/', 'Admin\MerchandiseController@editProcess');
             }
@@ -97,6 +97,13 @@ Route::group(
             ['prefix' => '/category'], function() {
                 Route::get('/', 'Admin\CategoryController@index');
                 Route::post('/add', 'Admin\CategoryController@add');
+            }
+        );
+        // Inventory
+        Route::group(
+            ['prefix' => 'inventory'], function() {
+                Route::get('/', 'Admin\InventoryController@index');
+                Route::patch('/{id}', 'Admin\InventoryController@inStock');
             }
         );
     }

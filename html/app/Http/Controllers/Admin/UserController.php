@@ -55,9 +55,9 @@ class UserController extends Controller
             return view('admin.user.index', $binding);
         }
         if($request->method == 'add') {
-            $User->admin = true;
+            $User->is_admin = true;
         } else {
-            $User->admin = false;
+            $User->is_admin = false;
         }
         $User->save();
 
@@ -65,7 +65,7 @@ class UserController extends Controller
             'users' => User::all(),
             'alert' => [
                 'type' => 'success',
-                'message' => 'User'.'successfully be added to Admin.',
+                'message' => 'User '.$User->name.'('.$User->email.') successfully be added to Admin.',
             ],
         ];
         return view('admin.user.index', $binding);

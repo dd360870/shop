@@ -23,7 +23,7 @@
                         <tr>
                             <td>{{ $m->name }}</td>
                             <td>
-                                {{ $m->amount }}
+                                {{ $m->buyAmount }}
                                 @if (! $m->stockEnough)
                                     <span style="color:red; font-size:0.7em">庫存數量不足</span>
                                 @endif
@@ -39,7 +39,7 @@
                     <tr>
                         <th>付款方式</th>
                         <td>
-                            @switch($pay_method)
+                            @switch($payment_method)
                                 @case('D')
                                     貨到付款
                                     @break
@@ -89,7 +89,7 @@
                 <form action="/shopping-cart/checkout" method="POST" style="text-align:right;">
                     @csrf
                     <div style="display:none;">
-                        <input name="pay_method" value="{{ $pay_method }}">
+                        <input name="payment_method" value="{{ $payment_method }}">
                         <input name="delivery_method" value="{{ $delivery_method }}">
                         <input name="delivery_name" value="{{ $delivery_name }}">
                         <input name="delivery_phone" value="{{ $delivery_phone }}">
