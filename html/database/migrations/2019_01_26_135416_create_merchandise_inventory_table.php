@@ -22,7 +22,7 @@ class CreateMerchandiseInventoryTable extends Migration
             $table->unsignedTinyInteger('size_id');
             $table->unsignedInteger('amount')->default(0);
             $table->string('product_id', 10)
-                ->storedAs('CONCAT(LPAD(merchandise_id, 6, "0"),
+                ->virtualAs('CONCAT(LPAD(merchandise_id, 6, "0"),
                     LPAD(color_id, 2, "0"),
                     LPAD(size_id, 1, "0")
                 )')
