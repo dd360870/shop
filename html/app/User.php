@@ -31,4 +31,8 @@ class User extends Authenticatable
     protected $cast = [
         'admin' => 'boolean',
     ];
+
+    public function scopeOfAdmin($query) {
+        return $query->where('is_admin', 1);
+    }
 }

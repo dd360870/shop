@@ -10,7 +10,7 @@
                 @endcomponent
             @endif
             <div class="border-bottom border-left border-right p-3">
-                <h1>最新</h1>
+                <h1 style="font-size:1em;">最新</h1>
                 <div id="row_new">
                     <div class="card-group">
                         @foreach ($new_items as $item)
